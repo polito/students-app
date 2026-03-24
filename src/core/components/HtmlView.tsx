@@ -27,63 +27,6 @@ import { parseDocument } from 'htmlparser2';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 
-const parseInlineStyle = (
-  styleStr: string | undefined,
-): Record<string, string> => {
-  if (!styleStr) return {};
-  const result: Record<string, string> = {};
-  styleStr.split(';').forEach(rule => {
-    const [key, value] = rule.split(':').map(s => s.trim());
-    if (key && value) {
-      const camelKey = key.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-      result[camelKey] = value;
-    }
-  });
-  return result;
-};
-
-const resolveNumericStyle = (
-  value: string | undefined,
-  relativeTo?: number,
-): number | undefined => {
-  if (!value) return undefined;
-  if (value.endsWith('%') && relativeTo != null) {
-    return (parseFloat(value) / 100) * relativeTo;
-  }
-  const num = parseFloat(value);
-  return isNaN(num) ? undefined : num;
-};
-
-const computeMediaDimensions = (
-  explicitWidth: number | undefined,
-  explicitHeight: number | undefined,
-  naturalAspectRatio: number | undefined,
-  fallbackWidth: number,
-): { width: number; height: number | undefined } => {
-  if (explicitWidth && explicitHeight) {
-    return { width: explicitWidth, height: explicitHeight };
-  }
-  if (explicitWidth) {
-    return {
-      width: explicitWidth,
-      height: naturalAspectRatio
-        ? explicitWidth / naturalAspectRatio
-        : undefined,
-    };
-  }
-  if (explicitHeight) {
-    return {
-      width: naturalAspectRatio
-        ? explicitHeight * naturalAspectRatio
-        : fallbackWidth,
-      height: explicitHeight,
-    };
-  }
-  return {
-    width: fallbackWidth,
-    height: naturalAspectRatio ? fallbackWidth / naturalAspectRatio : undefined,
-  };
-};
 const createCustomImageRenderer = (variant: string) => {
   return (props: InternalRendererProps<any>) => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -109,37 +52,38 @@ const createCustomImageRenderer = (variant: string) => {
     };
 
     if (variant === 'onboarding') {
-      const inlineStyle = parseInlineStyle(props.tnode.attributes.style);
+      const tnodeStyle = props.tnode.styles?.nativeBlockRet ?? {};
       const contentWidth = screenWidth - spacing[5] * 2;
-      const borderRadius = resolveNumericStyle(inlineStyle.borderRadius) ?? 0;
+      const rawWidth = tnodeStyle.width;
+      const resolvedWidth =
+        typeof rawWidth === 'string' && rawWidth.endsWith('%')
+          ? (parseFloat(rawWidth) / 100) * contentWidth
+          : typeof rawWidth === 'number'
+            ? rawWidth
+            : contentWidth;
       const naturalAspectRatio =
         naturalSize && naturalSize.height > 0
           ? naturalSize.width / naturalSize.height
           : undefined;
-      const { width: imgWidth, height: imgHeight } = computeMediaDimensions(
-        resolveNumericStyle(
-          inlineStyle.width ?? props.tnode.attributes.width,
-          contentWidth,
-        ),
-        resolveNumericStyle(
-          inlineStyle.height ?? props.tnode.attributes.height,
-        ),
-        naturalAspectRatio,
-        contentWidth,
-      );
+      const resolvedHeight =
+        typeof tnodeStyle.height === 'number'
+          ? tnodeStyle.height
+          : naturalAspectRatio
+            ? resolvedWidth / naturalAspectRatio
+            : undefined;
+      const imgStyle = {
+        ...tnodeStyle,
+        width: resolvedWidth,
+        ...(resolvedHeight != null && { height: resolvedHeight }),
+      };
 
       return (
         <ImageLoader
           source={{ uri }}
           onLoad={onImageLoad}
-          imageStyle={{
-            width: imgWidth,
-            ...(imgHeight != null && { height: imgHeight }),
-            borderRadius,
-          }}
+          imageStyle={imgStyle}
           containerStyle={{
-            width: imgWidth,
-            ...(imgHeight != null && { height: imgHeight }),
+            ...imgStyle,
             alignSelf: 'center',
             marginVertical: spacing[3],
           }}
@@ -174,10 +118,7 @@ const createCustomVideoRenderer = (variant: string) => {
     const { width: screenWidth } = useWindowDimensions();
     const uri = props.tnode.attributes.src ?? '';
     const [isLoading, setIsLoading] = useState(true);
-    const [naturalSize, setNaturalSize] = useState<{
-      width: number;
-      height: number;
-    }>();
+    const [aspectRatio, setAspectRatio] = useState<number>();
     const { spacing } = useTheme();
     const onBuffer = useCallback(
       ({ isBuffering }: { isBuffering: boolean }) => {
@@ -190,24 +131,29 @@ const createCustomVideoRenderer = (variant: string) => {
       setIsLoading(false);
       const { width: w, height: h } = data.naturalSize ?? {};
       if (w && h) {
-        setNaturalSize({ width: w, height: h });
+        setAspectRatio(w / h);
       }
     }, []);
 
     if (variant === 'onboarding') {
-      const inlineStyle = parseInlineStyle(props.tnode.attributes.style);
+      const tnodeStyle = props.tnode.styles?.nativeBlockRet ?? {};
       const contentWidth = screenWidth - spacing[5] * 2;
-      const borderRadius = resolveNumericStyle(inlineStyle.borderRadius) ?? 25;
-      const naturalAspectRatio =
-        naturalSize && naturalSize.height > 0
-          ? naturalSize.width / naturalSize.height
-          : undefined;
-      const { width: videoWidth, height: videoHeight } = computeMediaDimensions(
-        resolveNumericStyle(inlineStyle.width, contentWidth),
-        resolveNumericStyle(inlineStyle.height),
-        naturalAspectRatio,
-        contentWidth,
-      );
+      const rawWidth = tnodeStyle.width;
+      const resolvedWidth =
+        typeof rawWidth === 'string' && rawWidth.endsWith('%')
+          ? (parseFloat(rawWidth) / 100) * contentWidth
+          : typeof rawWidth === 'number'
+            ? rawWidth
+            : contentWidth;
+      const resolvedHeight =
+        typeof tnodeStyle.height === 'number'
+          ? tnodeStyle.height
+          : resolvedWidth / (aspectRatio ?? 16 / 9);
+      const videoStyle = {
+        ...tnodeStyle,
+        width: resolvedWidth,
+        height: resolvedHeight,
+      };
 
       return (
         <View style={{ alignSelf: 'center', padding: spacing[3] }}>
@@ -220,11 +166,7 @@ const createCustomVideoRenderer = (variant: string) => {
             repeat={true}
             onBuffer={onBuffer}
             onLoad={onLoad}
-            style={{
-              width: videoWidth,
-              ...(videoHeight != null && { height: videoHeight }),
-              borderRadius,
-            }}
+            style={videoStyle}
           />
           {isLoading && (
             <ActivityIndicator
@@ -436,13 +378,11 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         h5: styles.h5,
         h6: styles.h6,
       }}
-      ignoredStyles={[
-        'fontFamily',
-        'color',
-        'backgroundColor',
-        'width',
-        'height',
-      ]}
+      ignoredStyles={
+        variant === 'onboarding'
+          ? ['fontFamily', 'color', 'backgroundColor']
+          : ['fontFamily', 'color', 'backgroundColor', 'width', 'height']
+      }
       enableExperimentalBRCollapsing
       enableExperimentalGhostLinesPrevention
       enableCSSInlineProcessing
