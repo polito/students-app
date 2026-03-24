@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode, useState } from 'react';
+import { ComponentType, ReactNode, useMemo, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -38,6 +38,18 @@ export const OnboardingStep = ({
 
   const coverWidth = screenWidth - spacing[5] * 2;
 
+  const htmlViewProps = useMemo(
+    () => ({
+      source: { html },
+      baseStyle: {
+        paddingHorizontal: spacing[5],
+        paddingVertical: spacing[1],
+        paddingBottom: spacing[2],
+      },
+    }),
+    [html, spacing],
+  );
+
   return (
     <ScrollViewComponent
       contentContainerStyle={styles.content}
@@ -65,17 +77,7 @@ export const OnboardingStep = ({
           {title}
         </Text>
       </View>
-      <HtmlView
-        props={{
-          source: { html },
-          baseStyle: {
-            paddingHorizontal: spacing[5],
-            paddingVertical: spacing[1],
-            paddingBottom: spacing[2],
-          },
-        }}
-        variant="onboarding"
-      />
+      <HtmlView props={htmlViewProps} variant="onboarding" />
       {children}
       <CtaButtonSpacer />
     </ScrollViewComponent>
