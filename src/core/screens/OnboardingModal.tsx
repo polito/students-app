@@ -3,12 +3,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Platform, StyleSheet, View } from 'react-native';
-import { SystemBars } from 'react-native-edge-to-edge';
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -53,6 +53,8 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   if (!stepsRef.current && announcements?.some(a => !a.seen)) {
     stepsRef.current = announcements.filter(a => !a.seen);
   }
+
+  const { bottom } = useSafeAreaInsets();
 
   const unseenAnnouncements = useMemo(
     () => stepsRef.current ?? [],
@@ -103,15 +105,6 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   const onVideoPreloaded = useCallback(() => {
     setVideosReadyCount(prev => prev + 1);
   }, []);
-
-  useEffect(() => {
-    if (visible && mediaReady) {
-      SystemBars.setHidden({ navigationBar: true });
-    }
-    return () => {
-      SystemBars.setHidden({ navigationBar: false });
-    };
-  }, [visible, mediaReady]);
 
   const [currentStep, setCurrentStep] = useState<number>(0);
   const markedAsReadRef = useRef<Set<string>>(new Set());
@@ -194,7 +187,11 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
 
   return (
     <GestureHandlerRootView
-      style={[StyleSheet.absoluteFill, !mediaReady && { opacity: 0 }]}
+      style={[
+        StyleSheet.absoluteFill,
+        { bottom },
+        !mediaReady && { opacity: 0 },
+      ]}
       pointerEvents={mediaReady ? 'auto' : 'none'}
     >
       <Animated.View style={[styles.backdrop, backdropStyle]} />
@@ -227,7 +224,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
           borderTopRightRadius: shapes.lg,
         }}
         style={{
-          overflow: 'hidden',
+          overflow: 'scroll',
           borderTopLeftRadius: shapes.lg,
           borderTopRightRadius: shapes.lg,
         }}
