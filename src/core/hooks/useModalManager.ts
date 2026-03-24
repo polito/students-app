@@ -1,25 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import { AnnouncementScope } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
+import { useGetAnnouncements } from '../queries/announcementHooks';
 import { useCheckMfa } from '../queries/authHooks';
 import { useGetModalMessages } from '../queries/studentHooks';
-import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 
 export const useModalManager = (versionModalIsOpen?: boolean) => {
-  const { isSplashLoaded, didHideOnboarding } = useSplashContext();
-  const { onboardingStep, politoAuthnEnrolmentStatus } =
-    usePreferencesContext();
+  const { isSplashLoaded } = useSplashContext();
+  const { politoAuthnEnrolmentStatus } = usePreferencesContext();
   const hideInitialPrompt = politoAuthnEnrolmentStatus?.hideInitialPrompt;
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
 
   const { data: messages } = useGetModalMessages();
+  const { data: onboardingAnnouncements } = useGetAnnouncements(
+    false,
+    AnnouncementScope.Onboarding,
+  );
+
+  const hasUnseenOnboarding = useMemo(
+    () => onboardingAnnouncements?.some(a => !a.seen) ?? false,
+    [onboardingAnnouncements],
+  );
+
   const showMfaPrompt = mfaStatus?.status === 'available' && !hideInitialPrompt;
+
+  const [isOnboardingVisible, setIsOnboardingVisible] = useState(false);
+
   useEffect(() => {
     if (!isSplashLoaded) return;
     if (!showMfaPrompt) return;
@@ -32,19 +45,13 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   useEffect(() => {
     if (showMfaPrompt || mfaStatusPending) return;
     if (!isSplashLoaded) return;
-    if (didHideOnboarding) return;
-    if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
+    if (!hasUnseenOnboarding) return;
     if (versionModalIsOpen) return;
-    navigation.navigate('TeachingTab', {
-      screen: 'OnboardingModal',
-      initial: false,
-    });
+    setIsOnboardingVisible(true);
   }, [
     isSplashLoaded,
-    navigation,
     versionModalIsOpen,
-    didHideOnboarding,
-    onboardingStep,
+    hasUnseenOnboarding,
     showMfaPrompt,
     mfaStatusPending,
   ]);
@@ -52,9 +59,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   useEffect(() => {
     if (showMfaPrompt || mfaStatusPending) return;
     if (!isSplashLoaded) return;
-    if (onboardingStep === undefined && !didHideOnboarding) return;
-    if (onboardingStep !== undefined && onboardingStep < ONBOARDING_STEPS - 1)
-      return;
+    if (hasUnseenOnboarding) return;
     if (versionModalIsOpen) return;
     if (!messages || messages.length === 0) return;
     navigation.navigate('TeachingTab', {
@@ -65,10 +70,14 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
     messages,
     versionModalIsOpen,
     navigation,
-    onboardingStep,
     isSplashLoaded,
     showMfaPrompt,
-    didHideOnboarding,
+    hasUnseenOnboarding,
     mfaStatusPending,
   ]);
+
+  return {
+    isOnboardingVisible,
+    closeOnboarding: () => setIsOnboardingVisible(false),
+  };
 };

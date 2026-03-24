@@ -8,10 +8,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { TeachingNavigatorID } from '~/core/constants';
 
-import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
-import { OnboardingModal } from '../../../core/screens/OnboardingModal';
 import {
   SharedScreens,
   SharedScreensParamList,
@@ -47,7 +45,6 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     Transcript: undefined;
     ProvisionalGrade: { id: number };
     RecordedGrade: { grade: ExamGrade };
-    OnboardingModal: undefined;
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
@@ -163,17 +160,6 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
           headerBackButtonDisplayMode: 'minimal',
         }}
-      />
-      <Stack.Screen
-        name="OnboardingModal"
-        component={OnboardingModal}
-        options={({ navigation }) => ({
-          headerTitle: t('onboardingScreen.title'),
-          headerLargeTitle: false,
-          presentation: 'modal',
-          headerLeft: HeaderLogoNoProps,
-          headerRight: createHeaderCloseButton(navigation),
-        })}
       />
       <Stack.Screen
         name="PlacesTeachingStack"

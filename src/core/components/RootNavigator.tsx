@@ -31,6 +31,7 @@ import { useModalManager } from '../hooks/useModalManager';
 import { useNotifications } from '../hooks/useNotifications';
 import { useGetSites } from '../queries/placesHooks';
 import { useGetMessages, useGetStudent } from '../queries/studentHooks';
+import { OnboardingModal } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
@@ -53,7 +54,8 @@ export const RootNavigator = ({
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
   const [tabBarIconSize, setTabBarIconSize] = useState(20);
-  useModalManager(versionModalIsOpen);
+  const { isOnboardingVisible, closeOnboarding } =
+    useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
 
   useEffect(() => {
@@ -94,83 +96,89 @@ export const RootNavigator = ({
   );
 
   return (
-    <TabNavigator.Navigator
-      backBehavior="history"
-      screenOptions={{
-        tabBarShowLabel:
-          accessibility?.fontSize && accessibility.fontSize > 125
-            ? false
-            : true,
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarVisibilityAnimationConfig: {
-          show: instantAnimation,
-          hide: instantAnimation,
-        },
-        tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
-        tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
-        tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: [styles.tabBarLabelStyle],
-        tabBarInactiveTintColor: colors.tabBarInactive,
-        tabBarBadgeStyle: styles.tabBarBadgeStyle,
-      }}
-    >
-      <TabNavigator.Screen
-        name="TeachingTab"
-        component={TeachingNavigator}
-        options={{
-          tabBarLabel: t('teachingScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
-          ),
-          tabBarBadge: getUnreadsCount(['teaching']),
+    <>
+      <TabNavigator.Navigator
+        backBehavior="history"
+        screenOptions={{
+          tabBarShowLabel:
+            accessibility?.fontSize && accessibility.fontSize > 125
+              ? false
+              : true,
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
+          tabBarVisibilityAnimationConfig: {
+            show: instantAnimation,
+            hide: instantAnimation,
+          },
+          tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
+          tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
+          tabBarItemStyle: styles.tabBarItemStyle,
+          tabBarLabelStyle: [styles.tabBarLabelStyle],
+          tabBarInactiveTintColor: colors.tabBarInactive,
+          tabBarBadgeStyle: styles.tabBarBadgeStyle,
         }}
+      >
+        <TabNavigator.Screen
+          name="TeachingTab"
+          component={TeachingNavigator}
+          options={{
+            tabBarLabel: t('teachingScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
+            ),
+            tabBarBadge: getUnreadsCount(['teaching']),
+          }}
+        />
+        <TabNavigator.Screen
+          name="AgendaTab"
+          component={AgendaNavigator}
+          options={{
+            tabBarLabel: t('agendaScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
+            ),
+          }}
+        />
+        <TabNavigator.Screen
+          name="PlacesTab"
+          component={PlacesNavigator}
+          options={{
+            tabBarLabel: t('placesScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faCompass} color={color} size={tabBarIconSize} />
+            ),
+          }}
+        />
+        <TabNavigator.Screen
+          name="ServicesTab"
+          component={ServicesNavigator}
+          options={{
+            headerLeft: () => <HeaderLogo />,
+            tabBarLabel: t('common.services'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
+            ),
+            tabBarBadge: getUnreadsCount(['services']),
+          }}
+        />
+        <TabNavigator.Screen
+          name="ProfileTab"
+          component={UserNavigator}
+          options={{
+            tabBarLabel: t('profileScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faUser} color={color} size={tabBarIconSize} />
+            ),
+            tabBarBadge:
+              filterUnread(profileMessages.data || []).length || undefined,
+          }}
+        />
+      </TabNavigator.Navigator>
+      <OnboardingModal
+        visible={isOnboardingVisible}
+        onClose={closeOnboarding}
       />
-      <TabNavigator.Screen
-        name="AgendaTab"
-        component={AgendaNavigator}
-        options={{
-          tabBarLabel: t('agendaScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
-          ),
-        }}
-      />
-      <TabNavigator.Screen
-        name="PlacesTab"
-        component={PlacesNavigator}
-        options={{
-          tabBarLabel: t('placesScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faCompass} color={color} size={tabBarIconSize} />
-          ),
-        }}
-      />
-      <TabNavigator.Screen
-        name="ServicesTab"
-        component={ServicesNavigator}
-        options={{
-          headerLeft: () => <HeaderLogo />,
-          tabBarLabel: t('common.services'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
-          ),
-          tabBarBadge: getUnreadsCount(['services']),
-        }}
-      />
-      <TabNavigator.Screen
-        name="ProfileTab"
-        component={UserNavigator}
-        options={{
-          tabBarLabel: t('profileScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faUser} color={color} size={tabBarIconSize} />
-          ),
-          tabBarBadge:
-            filterUnread(profileMessages.data || []).length || undefined,
-        }}
-      />
-    </TabNavigator.Navigator>
+    </>
   );
 };
 
