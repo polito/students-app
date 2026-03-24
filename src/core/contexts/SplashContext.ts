@@ -4,8 +4,6 @@ export interface SplashContextProps {
   isAppLoaded: boolean;
   setIsAppLoaded: Dispatch<SetStateAction<boolean>>;
   isSplashLoaded: boolean;
-  didHideOnboarding: boolean;
-  hideOnboarding: () => void;
 }
 
 export const SplashContext = createContext<SplashContextProps | undefined>(

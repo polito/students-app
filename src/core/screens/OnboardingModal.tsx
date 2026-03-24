@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -36,7 +37,7 @@ interface Props {
 
 export const OnboardingModal = ({ visible, onClose }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { colors, shapes, spacing } = useTheme();
+  const { colors, shapes } = useTheme();
   const { t } = useTranslation();
   const bottomSheetRef = useRef<BaseBottomSheet>(null);
   const animatedPosition = useSharedValue(SCREEN_HEIGHT);
@@ -52,6 +53,8 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   if (!stepsRef.current && announcements?.some(a => !a.seen)) {
     stepsRef.current = announcements.filter(a => !a.seen);
   }
+
+  const { bottom } = useSafeAreaInsets();
 
   const unseenAnnouncements = useMemo(
     () => stepsRef.current ?? [],
@@ -145,7 +148,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
 
   const renderFooter = useCallback(
     (props: BottomSheetFooterProps) => (
-      <BottomSheetFooter {...props} bottomInset={spacing[8]}>
+      <BottomSheetFooter {...props}>
         <View style={styles.footerRow}>
           {!isFirstStep && (
             <CtaButton
@@ -165,15 +168,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
         </View>
       </BottomSheetFooter>
     ),
-    [
-      isFirstStep,
-      isLastStep,
-      onPreviousPage,
-      onNextPage,
-      t,
-      spacing,
-      styles.footerRow,
-    ],
+    [isFirstStep, isLastStep, onPreviousPage, onNextPage, t, styles.footerRow],
   );
 
   const backdropStyle = useAnimatedStyle(() => ({
@@ -192,7 +187,11 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
 
   return (
     <GestureHandlerRootView
-      style={[StyleSheet.absoluteFill, !mediaReady && { opacity: 0 }]}
+      style={[
+        StyleSheet.absoluteFill,
+        { bottom },
+        !mediaReady && { opacity: 0 },
+      ]}
       pointerEvents={mediaReady ? 'auto' : 'none'}
     >
       <Animated.View style={[styles.backdrop, backdropStyle]} />
@@ -213,8 +212,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
       <BaseBottomSheet
         ref={bottomSheetRef}
         index={0}
-        enableDynamicSizing
-        maxDynamicContentSize={maxHeight}
+        snapPoints={[maxHeight]}
         enablePanDownToClose={false}
         enableHandlePanningGesture={false}
         enableContentPanningGesture={false}
@@ -226,7 +224,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
           borderTopRightRadius: shapes.lg,
         }}
         style={{
-          overflow: 'hidden',
+          overflow: 'scroll',
           borderTopLeftRadius: shapes.lg,
           borderTopRightRadius: shapes.lg,
         }}
