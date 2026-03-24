@@ -37,6 +37,7 @@ export const FileNavigator = () => {
     <Stack.Navigator
       id={FileNavigatorID}
       screenOptions={{
+        animation: 'none',
         headerShown: false,
         ...useTitlesStyles(theme),
       }}

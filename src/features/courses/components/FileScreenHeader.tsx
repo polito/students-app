@@ -52,7 +52,7 @@ export const FileScreenHeader = ({
         </View>
       </MenuView>
       {!isInsideFolder && (
-        <View style={{ marginRight: spacing[2] }}>
+        <View style={{ marginRight: spacing[3] }}>
           <ToggleFilter
             isDirectoryView={isDirectoryView}
             onToggle={onToggleView}

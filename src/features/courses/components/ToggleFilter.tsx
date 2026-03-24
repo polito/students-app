@@ -24,34 +24,29 @@ export const ToggleFilter = ({
   const inactiveColor = palettes.gray[400];
 
   return (
-    <View style={[styles.container, disabled && styles.disabled]}>
-      <Pressable
-        onPress={isDirectoryView ? undefined : onToggle}
-        disabled={disabled || isDirectoryView}
-        style={[styles.tab, isDirectoryView && styles.activeTab]}
-        accessibilityRole="button"
-        accessibilityState={{ selected: isDirectoryView }}
-      >
+    <Pressable
+      onPress={onToggle}
+      disabled={disabled}
+      style={[styles.container, disabled && styles.disabled]}
+      accessibilityRole="button"
+      accessibilityLabel="Toggle view"
+      accessibilityState={{ disabled }}
+    >
+      <View style={[styles.tab, isDirectoryView && styles.activeTab]}>
         <Icon
           icon={faFolderTree}
           size={16}
           color={isDirectoryView ? activeColor : inactiveColor}
         />
-      </Pressable>
-      <Pressable
-        onPress={isDirectoryView ? onToggle : undefined}
-        disabled={disabled || !isDirectoryView}
-        style={[styles.tab, !isDirectoryView && styles.activeTab]}
-        accessibilityRole="button"
-        accessibilityState={{ selected: !isDirectoryView }}
-      >
+      </View>
+      <View style={[styles.tab, !isDirectoryView && styles.activeTab]}>
         <Icon
           icon={faList}
           size={16}
           color={!isDirectoryView ? activeColor : inactiveColor}
         />
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 };
 
@@ -62,11 +57,12 @@ const createStyles = ({ palettes, colors, dark, shapes, spacing }: Theme) =>
       alignItems: 'center',
       backgroundColor: dark ? colors.surfaceDark : palettes.gray[200],
       borderRadius: shapes.md,
-      padding: spacing[0.5],
-      gap: 0,
+      padding: spacing[1],
+      gap: 2,
     },
     tab: {
-      width: 34,
+      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[3],
       height: 28,
       alignItems: 'center',
       justifyContent: 'center',

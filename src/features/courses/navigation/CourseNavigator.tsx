@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -36,7 +36,7 @@ const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 export const CourseNavigator = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { palettes, fontSizes, spacing } = theme;
+  const { palettes, fontSizes } = theme;
   const { width } = useWindowDimensions();
   const { getUnreadsCount } = useNotifications();
   const titleStyles = useTitlesStyles(theme);
@@ -109,9 +109,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}
           adjustSpacing="right"
-          {...(Platform.OS === 'ios' && Platform.Version >= '26'
-            ? { noPadding: true, iconStyle: { marginLeft: spacing[2] } }
-            : {})}
           onPress={() => {
             navigation.navigate('CoursePreferences', {
               courseId: id,
@@ -127,7 +124,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     id,
     navigation,
     palettes.primary,
-    spacing,
     t,
     title,
     paramUniqueShortcode,
