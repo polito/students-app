@@ -854,27 +854,6 @@
     "master": "Master degree",
     "title": "Offering"
   },
-  "onboardingScreen": {
-    "steps": {
-      "0": {
-        "content": "You can customize what you see and make your agenda more organized by choosing the courses to view, the colors and the icons.",
-        "title": "What has changed?"
-      },
-      "1": {
-        "content": "You will find your way around the Polytechnic more easily thanks to the new system of maps and filters to find what you are looking for.",
-        "title": "What has changed?"
-      },
-      "2": {
-        "content": "Your comments help us improve: you can send feedback on the new app by opening a ticket that will go directly to the development team.",
-        "title": "How to give feedback?"
-      },
-      "3": {
-        "content": "To have access to your Polito email, follow the “Configure your email” guide in the new “Guides” section.",
-        "title": "How to configure email?"
-      }
-    },
-    "title": "What's new"
-  },
   "personScreen": {
     "call": "Call",
     "contacts": "Contacts",
