@@ -26,28 +26,6 @@ const useTicketsClient = (): TicketsApi => {
   return new TicketsApi();
 };
 
-export const useGiveTicketReplyFeedback = (
-  ticketId: number,
-  replyId: number,
-) => {
-  const client = useQueryClient();
-  const ticketsClient = useTicketsClient();
-  const invalidatesQueries = [
-    TICKETS_QUERY_KEY,
-    [TICKET_QUERY_PREFIX, ticketId],
-  ];
-
-  return useMutation({
-    mutationFn: (positive: boolean) =>
-      ticketsClient.setTicketReplyFeedback({ ticketId, replyId, positive }),
-    onSuccess() {
-      invalidatesQueries.forEach(queryKey =>
-        client.invalidateQueries({ queryKey }),
-      );
-    },
-  });
-};
-
 export const useGetTickets = () => {
   const ticketsClient = useTicketsClient();
 
@@ -90,6 +68,28 @@ export const useReplyToTicket = (ticketId: number) => {
     },
     onSuccess() {
       return invalidatesQueries.forEach(queryKey =>
+        client.invalidateQueries({ queryKey }),
+      );
+    },
+  });
+};
+
+export const useGiveTicketReplyFeedback = (
+  ticketId: number,
+  replyId: number,
+) => {
+  const client = useQueryClient();
+  const ticketsClient = useTicketsClient();
+  const invalidatesQueries = [
+    TICKETS_QUERY_KEY,
+    [TICKET_QUERY_PREFIX, ticketId],
+  ];
+
+  return useMutation({
+    mutationFn: (positive: boolean) =>
+      ticketsClient.setTicketReplyFeedback({ ticketId, replyId, positive }),
+    onSuccess() {
+      invalidatesQueries.forEach(queryKey =>
         client.invalidateQueries({ queryKey }),
       );
     },

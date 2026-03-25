@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,6 +25,8 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { useApiContext } from '../contexts/ApiContext';
+import { useDownloadsContext } from '../contexts/DownloadsContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';
@@ -48,9 +50,12 @@ export const RootNavigator = ({
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
   const styles = useStylesheet(createStyles);
+  const { username } = useApiContext();
+  const { syncLocalFilesToDb } = useDownloadsContext();
   const { data: student } = useGetStudent();
   const { updatePreference, accessibility } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
+  const hasSyncedFiles = useRef(false);
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
   const [tabBarIconSize, setTabBarIconSize] = useState(20);
@@ -69,6 +74,13 @@ export const RootNavigator = ({
   }, [student]);
 
   useInitFirebaseMessaging();
+
+  useEffect(() => {
+    if (username && !hasSyncedFiles.current) {
+      hasSyncedFiles.current = true;
+      syncLocalFilesToDb().catch(() => {});
+    }
+  }, [username, syncLocalFilesToDb]);
 
   useEffect(() => {
     if (student && !campus && sites?.data?.length) {

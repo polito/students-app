@@ -23,6 +23,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -117,6 +118,9 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
+  const [styless, setStyless] = useState(styles);
+  const { accessibility } = usePreferencesContext();
+  const { fontSizes } = useTheme();
   const accessibilityMessageText = [
     t('ticketScreen.yourQuestion'),
     ticket?.message,
@@ -148,15 +152,13 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     navigation.setOptions({ headerRight });
-  }, [navigation, headerRight]);
+  }, [navigation, ticket, headerRight]);
 
   const replies = useMemo(
     () =>
-      ticket?.replies != null
-        ? [...ticket.replies].sort(
-            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-          )
-        : [],
+      ticket?.replies.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+      ) ?? [],
     [ticket],
   );
 
@@ -174,14 +176,30 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     setFeedbackSentForReplyIds(prev => new Set(prev).add(replyId));
   }, []);
 
+  useEffect(() => {
+    const changeStyle = () => {
+      setStyless(prevStyles => ({
+        ...prevStyles,
+        text: {
+          ...prevStyles.text,
+          lineHeight: accessibility?.lineHeight
+            ? fontSizes.sm * 1.5
+            : undefined,
+          marginBottom: accessibility?.paragraphSpacing ? fontSizes.sm * 2 : 0,
+        },
+      }));
+    };
+    changeStyle();
+  }, [accessibility, fontSizes]);
+
   const keyboard = useAnimatedKeyboard();
   const animatedBottomPadding = useAnimatedStyle(() => ({
     paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
   }));
 
   const ItemsSeparator = useCallback(
-    () => <View style={styles.separator} />,
-    [styles],
+    () => <View style={styless.separator} />,
+    [styless],
   );
 
   // TODO: traslucent does not work anymore because now views
@@ -217,11 +235,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 <ChatBubble
                   accessibilityRole="text"
                   accessibilityLabel={accessibilityMessageText}
-                  style={styles.requestMessage}
+                  style={styless.requestMessage}
                 >
                   <HtmlMessage
                     message={ticket?.message}
-                    baseStyle={styles.text}
+                    baseStyle={styless.text}
                   />
                   {ticket.hasAttachments && (
                     <View>

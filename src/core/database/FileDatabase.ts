@@ -174,7 +174,8 @@ class FileDatabase {
       const result = await this.db.getFirstAsync(
         'SELECT COALESCE(SUM(sizeKb), 0) as total FROM files',
       );
-      return result?.total || 0;
+      const total = result?.total;
+      return typeof total === 'number' ? total : Number(total) || 0;
     });
   }
 
@@ -185,7 +186,8 @@ class FileDatabase {
         'SELECT COALESCE(SUM(sizeKb), 0) as total FROM files WHERE ctx || "-" || ctxId = ?',
         [area],
       );
-      return result?.total || 0;
+      const total = result?.total;
+      return typeof total === 'number' ? total : Number(total) || 0;
     });
   }
 
@@ -196,7 +198,8 @@ class FileDatabase {
         'SELECT COALESCE(SUM(sizeKb), 0) as total FROM files WHERE ctx = ? AND ctxId = ?',
         [ctx, ctxId],
       );
-      return result?.total || 0;
+      const total = result?.total;
+      return typeof total === 'number' ? total : Number(total) || 0;
     });
   }
 }

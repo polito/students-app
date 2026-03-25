@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
@@ -50,11 +50,13 @@ export interface Props extends Partial<ListItemProps> {
   enableMultiSelect?: boolean;
   onCheckComplete?: () => void;
   disabled?: boolean;
+  onLongPress?: () => void;
 }
 
 interface MenuProps extends Partial<ContextMenuProps> {
   onRefreshDownload: () => void;
   onRemoveDownload: () => void;
+  onSelect?: () => void;
   isDownloaded: boolean;
 }
 
@@ -62,37 +64,60 @@ const Menu = ({
   children,
   onRefreshDownload,
   onRemoveDownload,
+  onSelect,
   isDownloaded,
 }: MenuProps) => {
   const { t } = useTranslation();
   const { dark, colors } = useTheme();
 
+  const actions = useMemo(() => {
+    const base = [
+      {
+        title: t('common.refresh'),
+        titleColor: dark ? colors.white : colors.black,
+      },
+      {
+        title: t('common.delete'),
+        titleColor: dark ? colors.white : colors.black,
+        destructive: true,
+      },
+    ];
+    if (IS_IOS && isDownloaded && onSelect) {
+      return [
+        {
+          title: t('common.select'),
+          titleColor: dark ? colors.white : colors.black,
+        },
+        ...base,
+      ];
+    }
+    return base;
+  }, [t, dark, colors, isDownloaded, onSelect]);
+
+  const handlePress = useCallback(
+    ({ nativeEvent: { index } }: { nativeEvent: { index: number } }) => {
+      const hasSelect = IS_IOS && isDownloaded && onSelect;
+      if (hasSelect) {
+        if (index === 0) {
+          onSelect();
+          return;
+        }
+        if (index === 1) onRefreshDownload();
+        else if (index === 2) onRemoveDownload();
+      } else {
+        if (index === 0) onRefreshDownload();
+        else if (index === 1) onRemoveDownload();
+      }
+    },
+    [onSelect, onRefreshDownload, onRemoveDownload, isDownloaded],
+  );
+
   return (
     <ContextMenu
       dropdownMenuMode={IS_ANDROID}
       title={t('common.file')}
-      actions={[
-        {
-          title: t('common.refresh'),
-          titleColor: dark ? colors.white : colors.black,
-        },
-        {
-          title: t('common.delete'),
-          titleColor: dark ? colors.white : colors.black,
-          destructive: true,
-        },
-      ]}
-      onPress={({ nativeEvent: { index } }) => {
-        switch (index) {
-          case 0:
-            onRefreshDownload();
-            break;
-          case 1:
-            onRemoveDownload();
-            break;
-          default:
-        }
-      }}
+      actions={actions}
+      onPress={handlePress}
       disabled={IS_IOS && !isDownloaded}
     >
       {children}
@@ -109,6 +134,7 @@ export const CourseFileListItem = memo(
     enableMultiSelect,
     onCheckComplete,
     disabled,
+    onLongPress,
     ...rest
   }: Props) => {
     const { t } = useTranslation();
@@ -129,7 +155,6 @@ export const CourseFileListItem = memo(
     const { getUnreadsCount } = useNotifications();
     const {
       getCourseFilePath,
-      getFileSizeInStorage,
       downloadQueue,
       addFilesToQueue,
       removeFilesFromQueue,
@@ -138,7 +163,6 @@ export const CourseFileListItem = memo(
       () => ['teaching', 'courses', `${courseId}`, 'files', item.id] as const,
       [courseId, item.id],
     );
-    const [isCorrupted, setIsCorrupted] = useState(false);
     const isInQueue = useMemo(
       () => downloadQueue.files.some(f => f.id === item.id),
       [downloadQueue.files, item.id],
@@ -171,6 +195,7 @@ export const CourseFileListItem = memo(
     const {
       isDownloaded,
       isCheckingDownloadStatus,
+      isOutdated,
       downloadProgress,
       startDownload,
       stopDownload,
@@ -183,40 +208,8 @@ export const CourseFileListItem = memo(
       item.id,
       DownloadContext.Course,
       courseId.toString(),
+      item.checksum,
     );
-
-    useEffect(() => {
-      let cancelled = false;
-      (async () => {
-        if (!isDownloaded) {
-          if (!cancelled) setIsCorrupted(false);
-          return;
-        }
-        try {
-          const fileSize = await getFileSizeInStorage(cachedFilePath);
-          if (fileSize == null || cancelled) {
-            if (!cancelled) setIsCorrupted(false);
-            return;
-          }
-          const expectedSize = item.sizeInKiloBytes * 1024;
-          const sizeMismatch =
-            Math.abs(fileSize - expectedSize) /
-              Math.max(fileSize, expectedSize) >
-            0.1;
-          if (!cancelled) setIsCorrupted(sizeMismatch);
-        } catch {
-          if (!cancelled) setIsCorrupted(false);
-        }
-      })();
-      return () => {
-        cancelled = true;
-      };
-    }, [
-      cachedFilePath,
-      isDownloaded,
-      item.sizeInKiloBytes,
-      getFileSizeInStorage,
-    ]);
 
     useEffect(() => {
       if (!isCheckingDownloadStatus) {
@@ -275,7 +268,7 @@ export const CourseFileListItem = memo(
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
-        if (isCorrupted) {
+        if (isOutdated) {
           await refreshDownload();
           return;
         }
@@ -290,7 +283,7 @@ export const CourseFileListItem = memo(
       }
     }, [
       downloadProgress,
-      isCorrupted,
+      isOutdated,
       isDownloaded,
       navigation,
       openDownloadedFile,
@@ -398,10 +391,13 @@ export const CourseFileListItem = memo(
       ],
     );
 
+    const showContextMenuOnLongPress = IS_IOS && isDownloaded;
     const listItem = (
       <FileListItem
+        key={showContextMenuOnLongPress ? 'menu' : 'direct'}
         {...rest}
         disabled={disabled}
+        onLongPress={showContextMenuOnLongPress ? undefined : onLongPress}
         accessibilityLabel={
           !isDownloaded
             ? downloadProgress == null
@@ -410,27 +406,31 @@ export const CourseFileListItem = memo(
             : t('common.open')
         }
         onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
-        isDownloaded={isDownloaded}
+        isDownloaded={isDownloaded && !isCheckingDownloadStatus}
         downloadProgress={downloadProgress}
         title={stripIdInParentheses(item.name ?? '') || t('common.unnamedFile')}
         subtitle={metrics}
         trailingItem={trailingItem}
         mimeType={item.mimeType}
         unread={!!getUnreadsCount(fileNotificationScope)}
-        isCorrupted={isCorrupted}
+        isCorrupted={isOutdated}
       />
     );
 
     if (IS_IOS) {
-      return (
-        <Menu
-          onRefreshDownload={refreshDownload}
-          onRemoveDownload={removeDownload}
-          isDownloaded={isDownloaded}
-        >
-          {listItem}
-        </Menu>
-      );
+      if (isDownloaded) {
+        return (
+          <Menu
+            onRefreshDownload={refreshDownload}
+            onRemoveDownload={removeDownload}
+            onSelect={onLongPress}
+            isDownloaded={isDownloaded}
+          >
+            {listItem}
+          </Menu>
+        );
+      }
+      return listItem;
     }
 
     return listItem;

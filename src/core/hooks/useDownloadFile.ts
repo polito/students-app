@@ -14,6 +14,7 @@ import {
   type DownloadProgressData,
   createResumableDownload,
 } from '../storage/fileSystem';
+import { useNotifications } from './useNotifications';
 
 // import { useNotifications } from './useNotifications';
 
@@ -37,13 +38,14 @@ export const useDownloadFile = (
     cacheSizeVersion,
     refreshCacheVersion,
   } = useDownloadsContext();
-  // const { clearNotificationScope } = useNotifications();
+  const { clearNotificationScope } = useNotifications();
 
   const fileDatabase = getFileDatabase();
   const currentJobIdRef = useRef<number | undefined>(undefined);
   const isStoppedRef = useRef<boolean>(false);
   const [isCheckingDownloadStatus, setIsCheckingDownloadStatus] =
     useState(true);
+  const [isOutdated, setIsOutdated] = useState(false);
 
   const deleteFileFromSQLite = useCallback(
     async (id: string) => {
@@ -76,38 +78,58 @@ export const useDownloadFile = (
   );
 
   useEffect(() => {
+    if (!toFile) {
+      setIsCheckingDownloadStatus(false);
+      return;
+    }
+    if (download.isDownloaded) {
+      setIsCheckingDownloadStatus(false);
+      return;
+    }
+    let cancelled = false;
     (async () => {
-      if (!toFile) {
-        setIsCheckingDownloadStatus(false);
-        return;
-      }
       try {
         const fileRecord = await checkFileExistsInSQLite(fileId);
+        if (cancelled) return;
         if (fileRecord) {
           const fileOnDisk = await fileExistsInStorage(toFile);
+          if (cancelled) return;
           if (fileOnDisk) {
+            const outdated =
+              !!apiChecksum &&
+              !!fileRecord.checksum &&
+              apiChecksum !== fileRecord.checksum;
+            setIsOutdated(outdated);
             updateDownload({ isDownloaded: true });
           } else {
+            setIsOutdated(false);
             updateDownload({ isDownloaded: false });
           }
         } else {
+          setIsOutdated(false);
           updateDownload({ isDownloaded: false });
         }
       } catch (error) {
-        console.error('Error checking file status:', error);
-        updateDownload({ isDownloaded: false });
+        if (!cancelled) {
+          console.error('Error checking file status:', error);
+          updateDownload({ isDownloaded: false });
+        }
       } finally {
-        setIsCheckingDownloadStatus(false);
+        if (!cancelled) setIsCheckingDownloadStatus(false);
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [
     toFile,
     fileId,
+    download.isDownloaded,
     checkFileExistsInSQLite,
     updateDownload,
-    fileDatabase,
     fileExistsInStorage,
     cacheSizeVersion,
+    apiChecksum,
   ]);
 
   const resumableRef = useRef<ReturnType<
@@ -171,11 +193,6 @@ export const useDownloadFile = (
           }
 
           currentJobIdRef.current = undefined;
-          updateDownload({
-            isDownloaded: true,
-            downloadProgress: undefined,
-            phase: DownloadPhase.Completed,
-          });
 
           try {
             const { checksum } = await persistDownloadedFile(toFile, {
@@ -190,9 +207,26 @@ export const useDownloadFile = (
                 [{ text: t('common.ok') }],
               );
             }
+            updateDownload({
+              isDownloaded: true,
+              downloadProgress: undefined,
+              phase: DownloadPhase.Completed,
+            });
+            clearNotificationScope([
+              'teaching',
+              'courses',
+              `${ctxId}`,
+              'files',
+              fileId,
+            ]);
             return true;
           } catch (error) {
             console.error('Error saving file metadata to SQLite:', error);
+            updateDownload({
+              isDownloaded: false,
+              downloadProgress: undefined,
+              phase: DownloadPhase.Error,
+            });
             return false;
           }
         } catch (e) {
@@ -230,6 +264,7 @@ export const useDownloadFile = (
       fileId,
       apiChecksum,
       persistDownloadedFile,
+      clearNotificationScope,
     ],
   );
 
@@ -327,6 +362,7 @@ export const useDownloadFile = (
   return {
     ...(download ?? {}),
     isCheckingDownloadStatus,
+    isOutdated,
     startDownload,
     stopDownload,
     refreshDownload,

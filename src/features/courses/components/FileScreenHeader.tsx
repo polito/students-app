@@ -1,83 +1,35 @@
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { View } from 'react-native';
 
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
-import { IconButton } from '@lib/ui/components/IconButton';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { TextButton } from '@lib/ui/components/TextButton';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { MenuView } from '@react-native-menu/menu';
 
-import { MENU_ACTIONS } from '../constants';
+import { ToggleFilter } from './ToggleFilter';
 
 interface FileScreenHeaderProps {
-  enableMultiSelect: boolean;
-  allFilesSelected: boolean;
   activeSort: string;
   sortOptions: Array<{ id: string; title: string }>;
   onPressSortOption: (event: string) => void;
-  onPressOption: (event: NativeActionEvent) => void;
-  isDirectoryView?: boolean;
+  isDirectoryView: boolean;
+  onToggleView: () => void;
   isInsideFolder?: boolean;
   isSelectDisabled?: boolean;
 }
 
 export const FileScreenHeader = ({
-  enableMultiSelect,
-  allFilesSelected,
   activeSort,
   sortOptions,
   onPressSortOption,
-  onPressOption,
-  isDirectoryView = false,
+  isDirectoryView,
+  onToggleView,
   isInsideFolder = false,
   isSelectDisabled = false,
 }: FileScreenHeaderProps) => {
-  const { t } = useTranslation();
-  const { palettes, fontSizes } = useTheme();
-
-  const screenOptions = useMemo(
-    () => [
-      ...(!isSelectDisabled
-        ? [
-            {
-              id: MENU_ACTIONS.SELECT,
-              title: enableMultiSelect
-                ? t('common.cancelSelection')
-                : t('common.select'),
-            },
-            ...(enableMultiSelect
-              ? [
-                  {
-                    id: MENU_ACTIONS.SELECT_ALL,
-                    title: allFilesSelected
-                      ? t('common.deselectAll')
-                      : t('common.selectAll'),
-                  },
-                ]
-              : []),
-          ]
-        : []),
-      ...(!isSelectDisabled && !isInsideFolder
-        ? [
-            {
-              id: MENU_ACTIONS.TOGGLE_FOLDERS,
-              title: isDirectoryView
-                ? t('common.hideFolders')
-                : t('common.showFolders'),
-            },
-          ]
-        : []),
-    ],
-    [
-      t,
-      enableMultiSelect,
-      allFilesSelected,
-      isDirectoryView,
-      isInsideFolder,
-      isSelectDisabled,
-    ],
-  );
+  const { palettes, fontSizes, spacing } = useTheme();
+  const [isSortMenuOpen, setSortMenuOpen] = useState(false);
 
   const headerContent = (
     <>
@@ -86,18 +38,28 @@ export const FileScreenHeader = ({
         onPressAction={e => {
           onPressSortOption(e.nativeEvent.event);
         }}
+        onCloseMenu={() => setSortMenuOpen(false)}
+        onOpenMenu={() => setSortMenuOpen(true)}
       >
-        <TextButton>{activeSort}</TextButton>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TextButton>{activeSort}</TextButton>
+          <Icon
+            icon={isSortMenuOpen ? faChevronUp : faChevronDown}
+            size={fontSizes.md}
+            color={palettes.primary[400]}
+            style={{ marginLeft: 4 }}
+          />
+        </View>
       </MenuView>
-      <MenuView actions={screenOptions} onPressAction={onPressOption}>
-        <IconButton
-          icon={faEllipsisH}
-          color={palettes.primary[400]}
-          size={fontSizes.lg}
-          adjustSpacing="left"
-          accessibilityLabel={t('common.options')}
-        />
-      </MenuView>
+      {!isInsideFolder && (
+        <View style={{ marginRight: spacing[3] }}>
+          <ToggleFilter
+            isDirectoryView={isDirectoryView}
+            onToggle={onToggleView}
+            disabled={isSelectDisabled}
+          />
+        </View>
+      )}
     </>
   );
 

@@ -94,10 +94,11 @@ export const FileListItem = ({
       leadingItem={
         <View>
           <Icon icon={getIconFromMimeType(mimeType)} size={fontSizes['2xl']} />
-          {downloadProgress != null && downloadProgress < 1 ? (
+          {downloadProgress != null &&
+          (downloadProgress < 1 || !isDownloaded) ? (
             <View style={styles.downloadedIconContainer}>
               <ProgressIndicator
-                progress={downloadProgress}
+                progress={Math.min(1, downloadProgress)}
                 size={12}
                 color={palettes.secondary[600]}
               />
