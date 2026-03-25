@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import {
   CourseModuleEdition,
@@ -60,24 +60,28 @@ const courseTransactionsMapping: Record<
 
 const useUnreadNotificationsByScope = () => {
   const { data: notifications } = useGetNotifications();
-  return (notifications?.data
-    ?.filter(n => !n.isRead)
-    ?.reduce((byScope, notif) => {
-      if (notif.scope) {
-        const existingNotifications = get(byScope, notif.scope);
-        setWith(
-          byScope,
-          notif.scope,
-          // Important to avoid picking up objects with numeric keys
-          (Array.isArray(existingNotifications)
-            ? existingNotifications
-            : []
-          ).concat(notif),
-          Object,
-        );
-      }
-      return byScope;
-    }, {}) ?? {}) as UnreadNotificationsByScope;
+  return useMemo(
+    () =>
+      (notifications
+        ?.filter(n => !n.isRead)
+        ?.reduce((byScope, notif) => {
+          if (notif.scope) {
+            const existingNotifications = get(byScope, notif.scope);
+            setWith(
+              byScope,
+              notif.scope,
+              // Important to avoid picking up objects with numeric keys
+              (Array.isArray(existingNotifications)
+                ? existingNotifications
+                : []
+              ).concat(notif),
+              Object,
+            );
+          }
+          return byScope;
+        }, {}) ?? {}) as UnreadNotificationsByScope,
+    [notifications],
+  );
 };
 
 const extractSubtreeNotifications = (root: any) => {
@@ -145,7 +149,8 @@ export const useNotifications = () => {
        */
       summarize = false,
     ) => {
-      const root = get(unreadNotifications, path!);
+      if (!path) return undefined;
+      const root = get(unreadNotifications, path);
       const visitNode = (node: object | Notification[]): number => {
         if (Array.isArray(node)) {
           return node.length ?? 0;
