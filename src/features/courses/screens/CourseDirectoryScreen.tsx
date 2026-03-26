@@ -73,7 +73,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     const entries = directoryQuery.data ?? [];
     return entries
       .filter(entry => entry?.type === 'file')
-      .map(entry => entry.id as string);
+      .map(entry => entry.id);
   }, [directoryQuery.data]);
 
   useOnLeaveScreen(() => {
@@ -85,7 +85,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
         `${courseId}`,
         'files',
         fileId,
-      ] as any);
+      ]);
     });
   });
 
@@ -172,7 +172,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   );
 
   const targetNav = isFileNavigator
-    ? (navigation.getParent()?.getParent() as any)
+    ? navigation.getParent()?.getParent()
     : navigation;
 
   const handleLongPressFile = useCallback(
@@ -276,7 +276,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
             }
             initialNumToRender={15}
             renderItem={({ item }) =>
-              (item as any).type === ITEM_TYPES.DIRECTORY ? (
+              item.type === ITEM_TYPES.DIRECTORY ? (
                 <CourseDirectoryListItem
                   courseId={courseId}
                   item={item as CourseDirectory}
