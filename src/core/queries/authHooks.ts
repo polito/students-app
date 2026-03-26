@@ -11,7 +11,7 @@ import {
   SwitchCareerRequest,
   ValidateMfaRequest,
 } from '@polito/student-api-client';
-import { getMessaging, getToken } from '@react-native-firebase/messaging';
+import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -20,6 +20,7 @@ import { UserStackParamList } from '~/features/user/components/UserNavigator.tsx
 
 import { t } from 'i18next';
 
+import { isEnvProduction } from '../../utils/env';
 import {
   getCredentials,
   resetCredentials,
@@ -44,8 +45,10 @@ const useAuthClient = (): AuthApi => {
 export async function getFcmToken(
   catchException: boolean = true,
 ): Promise<string | undefined> {
+  if (!isEnvProduction) return undefined;
+
   try {
-    return await getToken(getMessaging());
+    return await getApp().messaging().getToken();
   } catch (e) {
     if (!catchException) {
       throw e;

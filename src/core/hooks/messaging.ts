@@ -6,19 +6,14 @@ import {
 } from 'react-native-permissions';
 
 import { MessageType } from '@polito/student-api-client';
+import { getApp } from '@react-native-firebase/app';
 import {
   AuthorizationStatus,
   FirebaseMessagingTypes,
-  getInitialNotification,
-  getMessaging,
-  onMessage,
-  onNotificationOpenedApp,
-  onTokenRefresh,
-  requestPermission,
-  setBackgroundMessageHandler,
 } from '@react-native-firebase/messaging';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { isEnvProduction } from '../../utils/env';
 import { useUpdateAppInfo } from '../queries/authHooks.ts';
 import {
   MESSAGES_QUERY_KEY,
@@ -47,34 +42,34 @@ export const useInitFirebaseMessaging = () => {
   );
   useEffect(() => {
     (async () => {
-      const messaging = getMessaging();
+      if (!isEnvProduction) return;
 
-      onTokenRefresh(messaging, updateAppInfo);
+      const messaging = getApp().messaging();
+
+      messaging.onTokenRefresh(updateAppInfo);
 
       if ((await checkNotifications()).status !== RESULTS.GRANTED) {
         await requestNotifications();
       }
 
-      const authorizationStatus = await requestPermission(messaging, {
+      const authorizationStatus = await messaging.requestPermission({
         badge: true,
         alert: true,
         sound: true,
       });
       if (authorizationStatus !== AuthorizationStatus.DENIED) {
-        const unsubscribeOnNotificationOpenedApp = onNotificationOpenedApp(
-          messaging,
-          remoteMessage => {
+        const unsubscribeOnNotificationOpenedApp =
+          messaging.onNotificationOpenedApp(remoteMessage => {
             navigateToUpdate(remoteMessage as RemoteMessage);
-          },
-        );
+          });
 
-        getInitialNotification(messaging).then(remoteMessage => {
+        messaging.getInitialNotification().then(remoteMessage => {
           navigateToUpdate(remoteMessage as RemoteMessage);
         });
 
-        const unsubscribeOnMessage = onMessage(messaging, onMessageHandler);
+        const unsubscribeOnMessage = messaging.onMessage(onMessageHandler);
 
-        setBackgroundMessageHandler(messaging, onMessageHandler);
+        messaging.setBackgroundMessageHandler(onMessageHandler);
 
         return () =>
           [unsubscribeOnMessage, unsubscribeOnNotificationOpenedApp].forEach(
