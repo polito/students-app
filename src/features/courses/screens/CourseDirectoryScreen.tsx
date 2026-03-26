@@ -26,6 +26,8 @@ import { FileNavigatorID } from '~/core/constants';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useNotifications } from '../../../core/hooks/useNotifications';
+import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetCourseDirectory,
@@ -64,6 +66,28 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
   }, [navigation]);
+
+  const { clearNotificationScope } = useNotifications();
+
+  const directFileIds = useMemo(() => {
+    const entries = directoryQuery.data ?? [];
+    return entries
+      .filter(entry => entry?.type === 'file')
+      .map(entry => entry.id as string);
+  }, [directoryQuery.data]);
+
+  useOnLeaveScreen(() => {
+    if (directFileIds.length === 0) return;
+    directFileIds.forEach(fileId => {
+      clearNotificationScope([
+        'teaching',
+        'courses',
+        `${courseId}`,
+        'files',
+        fileId,
+      ] as any);
+    });
+  });
 
   useFocusEffect(
     useCallback(() => {
