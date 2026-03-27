@@ -87,12 +87,10 @@ export const useGiveTicketReplyFeedback = (
     onSuccess(_data, positive) {
       if (positive) {
         client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
-        client.invalidateQueries({ queryKey: [TICKET_QUERY_PREFIX] });
-      } else {
-        client.invalidateQueries({
-          queryKey: [TICKET_QUERY_PREFIX, ticketId],
-        });
       }
+      client.invalidateQueries({
+        queryKey: [TICKET_QUERY_PREFIX, ticketId],
+      });
     },
   });
 };
