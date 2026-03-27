@@ -164,8 +164,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   const lastReply = replies[0];
 
-  const showFeedbackBar = !!lastReply && lastReply.needsFeedback === true;
-
   useEffect(() => {
     const changeStyle = () => {
       setStyless(prevStyles => ({
@@ -256,7 +254,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      {showFeedbackBar && lastReply ? (
+      {lastReply?.needsFeedback ? (
         <VirtualOperatorFeedbackBar ticketId={id} replyId={lastReply.id} />
       ) : (
         <TicketMessagingView ticketId={id} />
