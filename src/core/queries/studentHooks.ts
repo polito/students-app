@@ -337,7 +337,7 @@ export const useGetNotifications = () => {
 
   return useQuery({
     queryKey: NOTIFICATIONS_QUERY_KEY,
-    queryFn: () => studentClient.getNotifications().then(pluckData),
+    queryFn: () => studentClient.getNotifications(),
     staleTime: Infinity,
     refetchOnWindowFocus: true,
   });
