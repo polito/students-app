@@ -163,18 +163,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   );
 
   const lastReply = replies[0];
-  const [feedbackSentForReplyIds, setFeedbackSentForReplyIds] = useState(
-    () => new Set<number>(),
-  );
-
-  const showFeedbackBar =
-    !!lastReply &&
-    !feedbackSentForReplyIds.has(lastReply.id) &&
-    lastReply.needsFeedback === true;
-
-  const handleFeedbackSent = useCallback((replyId: number) => {
-    setFeedbackSentForReplyIds(prev => new Set(prev).add(replyId));
-  }, []);
 
   useEffect(() => {
     const changeStyle = () => {
@@ -266,12 +254,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      {showFeedbackBar && lastReply ? (
-        <VirtualOperatorFeedbackBar
-          ticketId={id}
-          replyId={lastReply.id}
-          onFeedbackSent={() => handleFeedbackSent(lastReply.id)}
-        />
+      {lastReply?.needsFeedback ? (
+        <VirtualOperatorFeedbackBar ticketId={id} replyId={lastReply.id} />
       ) : (
         <TicketMessagingView ticketId={id} />
       )}

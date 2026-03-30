@@ -80,18 +80,17 @@ export const useGiveTicketReplyFeedback = (
 ) => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
-  const invalidatesQueries = [
-    TICKETS_QUERY_KEY,
-    [TICKET_QUERY_PREFIX, ticketId],
-  ];
 
   return useMutation({
     mutationFn: (positive: boolean) =>
       ticketsClient.setTicketReplyFeedback({ ticketId, replyId, positive }),
-    onSuccess() {
-      invalidatesQueries.forEach(queryKey =>
-        client.invalidateQueries({ queryKey }),
-      );
+    onSuccess(_data, positive) {
+      if (positive) {
+        client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
+      }
+      client.invalidateQueries({
+        queryKey: [TICKET_QUERY_PREFIX, ticketId],
+      });
     },
   });
 };
