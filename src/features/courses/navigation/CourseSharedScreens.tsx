@@ -222,6 +222,7 @@ export const CourseSharedScreens = () => {
           headerShown: Platform.OS === 'android' ? true : false,
           headerLargeTitle: false,
           headerTransparent: false,
+          animation: 'none',
           title: t('courseDirectoryScreen.selectFiles'),
           headerLeft: () => null,
           headerRight:
