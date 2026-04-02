@@ -19,6 +19,10 @@ export class MigrationService {
       runBeforeVersion: '1.6.2',
       run: [migrateCourseFilesCacheToDocumentsDirectory],
     },
+    {
+      runBeforeVersion: '1.9.1',
+      run: [invalidateCache],
+    },
   ];
 
   static needsMigration(preferences: PreferencesContextProps) {
@@ -52,7 +56,6 @@ export class MigrationService {
       }
 
       console.debug('Updating lastInstalledVersion to', currentVersion);
-
       updatePreference('lastInstalledVersion', currentVersion);
     }
   }
