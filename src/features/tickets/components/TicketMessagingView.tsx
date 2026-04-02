@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Keyboard, ViewProps } from 'react-native';
 
@@ -21,29 +21,24 @@ export const TicketMessagingView = ({
   const [message, setMessage] = useState<string>('');
   const [attachment, setAttachment] = useState<Attachment>();
 
-  const {
-    mutateAsync: reply,
-    isPending,
-    isSuccess,
-  } = useReplyToTicket(ticketId);
+  const { mutateAsync: reply, isPending } = useReplyToTicket(ticketId);
 
-  const onSend = () => {
+  const onSend = useCallback(() => {
+    if (isPending) return;
     reply({
       ticketId: ticketId,
       attachment: attachment as unknown as Blob,
       message: message.trim().replace(/\n/g, '<br>'),
-    }).catch(() => {
-      Alert.alert(t('common.error'), t('ticketScreen.sendError'));
-    });
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      setMessage('');
-      setAttachment(undefined);
-      Keyboard.dismiss();
-    }
-  }, [isSuccess]);
+    })
+      .then(() => {
+        setMessage('');
+        setAttachment(undefined);
+        Keyboard.dismiss();
+      })
+      .catch(() => {
+        Alert.alert(t('common.error'), t('ticketScreen.sendError'));
+      });
+  }, [attachment, message, reply, t, ticketId, isPending]);
 
   return (
     <MessagingView
