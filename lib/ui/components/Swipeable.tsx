@@ -95,8 +95,10 @@ const RightActionWrapper = ({
 
 type SwipeableChildRenderProp = (state: { isSwiping: boolean }) => ReactNode;
 
-interface Props
-  extends Omit<Partial<SwipeableProps>, 'renderRightActions' | 'children'> {
+interface Props extends Omit<
+  Partial<SwipeableProps>,
+  'renderRightActions' | 'children'
+> {
   children: ReactNode | SwipeableChildRenderProp;
   rightAction?: ReactNode;
   rightActionWidth?: number;

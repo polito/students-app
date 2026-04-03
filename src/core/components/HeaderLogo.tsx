@@ -24,4 +24,11 @@ export const HeaderLogo = (props: RowProps) => {
   );
 };
 
+export const headerLogoItem = () => [
+  {
+    type: 'custom' as const,
+    element: <HeaderLogo />,
+    hidesSharedBackground: true,
+  },
+];
 export const HeaderLogoNoProps = () => <HeaderLogo />;

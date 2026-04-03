@@ -21,8 +21,10 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
-export interface BottomSheetTextFieldProps
-  extends Omit<TextFieldProps, 'inputRef'> {
+export interface BottomSheetTextFieldProps extends Omit<
+  TextFieldProps,
+  'inputRef'
+> {
   leadingIcon?: IconDefinition;
   isClearable?: boolean;
   onClear?: () => void;

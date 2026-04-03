@@ -50,12 +50,16 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan documents</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Save PoliTO Authenticator MFA private key in Secure Enclave</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Access to current position to check-in bookings</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Access to current position to check-in bookings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Scan documents and pick images for assignments and ticket attachments</string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Bold.ttf</string>
@@ -92,8 +96,6 @@
 	</array>
 	<key>UISupportsDocumentBrowser</key>
 	<true/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Save PoliTO Authenticator MFA private key in Secure Enclave</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

@@ -6,7 +6,9 @@ import { TicketFAQ, TicketStatus } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { HeaderLogo, headerLogoItem } from '~/core/components/HeaderLogo';
+import { IS_IOS } from '~/core/constants';
+
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
   SharedScreens,
@@ -114,7 +116,9 @@ export const ServicesNavigator = () => {
         name="Services"
         component={ServicesScreen}
         options={{
-          headerLeft: () => <HeaderLogo />,
+          ...(IS_IOS && Platform.Version >= '26'
+            ? { unstable_headerLeftItems: headerLogoItem }
+            : { headerLeft: () => <HeaderLogo /> }),
           headerTitle: t('servicesScreen.title'),
         }}
       />
@@ -140,6 +144,7 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
           headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
+          headerTransparent: false,
         }}
       />
       <Stack.Screen
@@ -148,6 +153,7 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('createTicketScreen.title'),
+          headerTransparent: false,
         }}
       />
       <Stack.Screen

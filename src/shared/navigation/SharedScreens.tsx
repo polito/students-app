@@ -1,13 +1,18 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
 import { MfaChallenge, OfferingCourseStaff } from '@polito/student-api-client';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { IS_IOS } from '~/core/constants.ts';
 import { PolitoAuthenticatorScreen } from '~/features/user/screens/PolitoAuthenticatorScreen';
 
 import { createHeaderCloseButton } from '../../core/components/HeaderCloseButton';
-import { HeaderLogoNoProps } from '../../core/components/HeaderLogo';
+import {
+  HeaderLogoNoProps,
+  headerLogoItem,
+} from '../../core/components/HeaderLogo';
 import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
 import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';
@@ -115,7 +120,9 @@ export const SharedScreens = () => {
           headerTitle: t('messagesScreen.title'),
           headerLargeTitle: false,
           presentation: 'modal',
-          headerLeft: HeaderLogoNoProps,
+          ...(IS_IOS && Platform.Version >= '26'
+            ? { unstable_headerLeftItems: headerLogoItem }
+            : { headerLeft: HeaderLogoNoProps }),
           headerRight: createHeaderCloseButton(navigation),
         })}
       />
@@ -123,10 +130,12 @@ export const SharedScreens = () => {
         name="PolitoAuthenticator"
         component={PolitoAuthenticatorScreen}
         options={{
+          ...(IS_IOS && Platform.Version >= '26'
+            ? { unstable_headerLeftItems: headerLogoItem }
+            : { headerLeft: HeaderLogoNoProps }),
           headerTitle: t('mfaScreen.headerTitle'),
           headerLargeTitle: false,
           presentation: 'modal',
-          headerLeft: HeaderLogoNoProps,
         }}
       />
       <Stack.Screen

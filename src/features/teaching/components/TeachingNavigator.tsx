@@ -6,9 +6,12 @@ import { ExamGrade } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { TeachingNavigatorID } from '~/core/constants';
+import { IS_IOS, TeachingNavigatorID } from '~/core/constants';
 
-import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
+import {
+  HeaderLogoNoProps,
+  headerLogoItem,
+} from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
   SharedScreens,
@@ -75,7 +78,9 @@ export const TeachingNavigator = () => {
         name="Home"
         component={TeachingScreen}
         options={{
-          headerLeft: HeaderLogoNoProps,
+          ...(IS_IOS && Platform.Version >= '26'
+            ? { unstable_headerLeftItems: headerLogoItem }
+            : { headerLeft: HeaderLogoNoProps }),
           headerTitle: t('teachingScreen.title'),
         }}
       />

@@ -13,8 +13,13 @@ import {
   UserLocation,
 } from '@rnmapbox/maps';
 
+import { IS_IOS } from '~/core/constants';
+
 import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
-import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
+import {
+  HeaderLogoNoProps,
+  headerLogoItem,
+} from '../../../core/components/HeaderLogo';
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { notNullish } from '../../../utils/predicates';
@@ -220,7 +225,9 @@ export const PlacesNavigator = () => {
             headerTitle: t('messagesScreen.title'),
             headerLargeTitle: false,
             presentation: 'modal',
-            headerLeft: HeaderLogoNoProps,
+            ...(IS_IOS && Platform.Version >= '26'
+              ? { unstable_headerLeftItems: headerLogoItem }
+              : { headerLeft: HeaderLogoNoProps }),
             headerRight: createHeaderCloseButton(navigation),
           })}
         />

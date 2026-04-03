@@ -5,8 +5,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '~/core/components/HeaderLogo.tsx';
-import { AgendaNavigatorID } from '~/core/constants';
+import { HeaderLogo, headerLogoItem } from '~/core/components/HeaderLogo.tsx';
+import { AgendaNavigatorID, IS_IOS } from '~/core/constants';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
 import { useTitlesStyles } from '~/core/hooks/useTitlesStyles.ts';
 import { AgendaPreferencesScreen } from '~/features/agenda/screens/AgendaPreferencesScreen.tsx';
@@ -80,7 +80,9 @@ export const AgendaNavigator = () => {
         component={AgendaScreen}
         options={({ route: { params } }) => ({
           headerLargeTitle: false,
-          headerLeft: () => <HeaderLogo />,
+          ...(IS_IOS && Platform.Version >= '26'
+            ? { unstable_headerLeftItems: headerLogoItem }
+            : { headerLeft: () => <HeaderLogo /> }),
           headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
@@ -96,7 +98,9 @@ export const AgendaNavigator = () => {
         component={AgendaWeekScreen}
         options={{
           headerLargeTitle: false,
-          headerLeft: () => <HeaderLogo />,
+          ...(IS_IOS && Platform.Version >= '26'
+            ? { unstable_headerLeftItems: headerLogoItem }
+            : { headerLeft: () => <HeaderLogo /> }),
           headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
