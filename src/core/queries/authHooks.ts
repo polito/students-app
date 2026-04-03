@@ -210,10 +210,13 @@ export const useUpdateAppInfo = () => {
   });
 };
 
-export const GetWebmailLink = async () => {
+export const useGetWebmailLink = () => {
   const authClient = useAuthClient();
 
-  return authClient.getMailLink().then(pluckData);
+  return useCallback(
+    () => authClient.getMailLink().then(pluckData),
+    [authClient],
+  );
 };
 
 export const useCheckMfa = (autoFetch = false) => {

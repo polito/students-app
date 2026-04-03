@@ -83,7 +83,7 @@ export const PlacesBottomSheet = forwardRef<
           />
         )}
         <BottomSheetFlatList
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: ListItemProps }) => (
             <ListItem
               leadingItem={<Icon icon={faMapPin} size={fontSizes['2xl']} />}
               {...item}

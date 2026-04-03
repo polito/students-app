@@ -1,9 +1,8 @@
 import { memo, useCallback } from 'react';
 import {
-  NativeSyntheticEvent,
+  FocusEvent,
   Platform,
   StyleSheet,
-  TextInputFocusEventData,
   TextInputProps,
   ViewStyle,
 } from 'react-native';
@@ -57,7 +56,7 @@ const BottomSheetTextFieldComponent = ({
     [onChangeText],
   );
 
-  const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+  const handleFocus = (e: FocusEvent) => {
     keyboardContext?.onTextFieldFocus();
     onFocus?.(e);
   };
