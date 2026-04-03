@@ -3,7 +3,6 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -81,7 +80,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const isOffline = useOfflineDisabled();
   const { language } = usePreferencesContext();
 
-  const [showAgenda, setShowAgenda] = useState(false);
+  const [showAgenda, setShowAgenda] = useState<boolean | null>(null);
   const [currentWeekStart, setCurrentWeekStart] = useState(
     START_DATE.startOf('week'),
   );
@@ -109,6 +108,13 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     () => getCalendarPropsFromTopic(topics, topicId),
     [topics, topicId],
   );
+
+  const showAgendaLayout =
+    showAgenda !== null ? showAgenda : !!currentTopic.agendaView;
+
+  useEffect(() => {
+    setShowAgenda(null);
+  }, [topicId]);
 
   const calendarEvents = useMemo<BookingCalendarEvent[]>(() => {
     if (!bookingSlots) return [];
@@ -195,25 +201,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     }));
 
     setLoadedWeeks(ws => (ws.includes(weekISO) ? ws : [...ws, weekISO]));
-    // if (currentTopic.agendaView) setShowAgenda(true);
-  }, [bookingSlots, currentWeekStart, currentTopic.agendaView]);
+  }, [bookingSlots, currentWeekStart]);
 
-  const hasAutoOpenedRef = useRef(false);
-
-  useEffect(() => {
-    if (
-      currentTopic.agendaView &&
-      bookingSlots &&
-      bookingSlots.length > 0 &&
-      !hasAutoOpenedRef.current
-    ) {
-      setShowAgenda(true);
-      hasAutoOpenedRef.current = true;
-    }
-  }, [currentTopic.agendaView, bookingSlots]);
   useEffect(() => {
     setCurrentWeekStart(START_DATE.startOf('week'));
-  }, [showAgenda]);
+  }, [showAgendaLayout]);
 
   const screenOptions = useMemo<AgendaOption[]>(
     () => [
@@ -223,12 +215,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       },
       {
         id: 'toggleView',
-        title: showAgenda
+        title: showAgendaLayout
           ? t('agendaScreen.weeklyLayout')
           : t('agendaScreen.dailyLayout'),
       },
     ],
-    [t, showAgenda],
+    [t, showAgendaLayout],
   );
 
   const onPressOption = useCallback(
@@ -238,13 +230,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           refetch();
           break;
         case 'toggleView':
-          setShowAgenda(v => !v);
+          setShowAgenda(prev => {
+            const showingLayout =
+              prev !== null ? prev : !!currentTopic.agendaView;
+            return !showingLayout;
+          });
           break;
         default:
           break;
       }
     },
-    [refetch],
+    [refetch, currentTopic.agendaView],
   );
 
   useLayoutEffect(() => {
@@ -275,9 +271,14 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     title: string;
     data: BookingCalendarEvent[];
   };
+
+  const currentWeekIso = currentWeekStart.toISODate()!;
+
   const weekSections = useMemo<WeekSection[]>(() => {
     return loadedWeeks.map(isoStart => {
-      const evts = eventsByWeek[isoStart] || [];
+      const fromState = eventsByWeek[isoStart];
+      const evts =
+        isoStart === currentWeekIso ? calendarEvents : (fromState ?? []);
       const start = DateTime.fromISO(isoStart);
       const end = start.plus({ days: 6 });
       const sorted = evts
@@ -288,7 +289,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         data: sorted,
       };
     });
-  }, [loadedWeeks, eventsByWeek]);
+  }, [loadedWeeks, eventsByWeek, currentWeekIso, calendarEvents]);
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
@@ -296,7 +297,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         <Tabs>
           <BookingSlotsStatusLegend />
         </Tabs>
-        {!showAgenda && (
+        {!showAgendaLayout && (
           <WeekFilter
             current={currentWeekStart}
             getNext={() =>
@@ -321,7 +322,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       </HeaderAccessory>
 
       <View style={styles.container} onLayout={() => {}}>
-        {showAgenda ? (
+        {showAgendaLayout ? (
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
             keyExtractor={item => item.id.toString()}
@@ -338,7 +339,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               </Text>
             )}
             renderSectionFooter={({ section }) =>
-              section.data.length === 0 ? (
+              section.data.length === 0 &&
+              !isLoading &&
+              !isFetching &&
+              !isRefetching ? (
                 <Row style={{ marginVertical: 8, marginHorizontal: 16 }}>
                   <View style={styles.dayColumn} />
                   <Col flex={1}>
@@ -445,10 +449,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               );
             }}
             onEndReached={() => {
-              if (!isOffline) {
-                const nextWeek = currentWeekStart.plus({ week: 1 });
-                setCurrentWeekStart(nextWeek);
+              if (
+                isOffline ||
+                isLoading ||
+                isFetching ||
+                isRefetching ||
+                bookingSlots === undefined
+              ) {
+                return;
               }
+              const nextWeek = currentWeekStart.plus({ week: 1 });
+              setCurrentWeekStart(nextWeek);
             }}
             onEndReachedThreshold={0.5}
             ListFooterComponent={
@@ -457,7 +468,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               ) : null
             }
             ListEmptyComponent={
-              <View style={styles.empty}>{!isLoading && <EmptyWeek />}</View>
+              isLoading || isFetching || isRefetching ? null : (
+                <View style={styles.empty}>
+                  <EmptyWeek />
+                </View>
+              )
             }
           />
         ) : (
