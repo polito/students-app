@@ -279,12 +279,14 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
                       // Moduli nascosti nei corsi visibili
                       if (course.modules) {
-                        course.modules.forEach((module, index) => {
-                          const moduleShortcode = `${course.shortcode}${index + 1}`;
-                          if (coursePreferences[moduleShortcode]?.isHidden) {
-                            hiddenCount += 1;
-                          }
-                        });
+                        course.modules.forEach(
+                          (module: { id?: number | null }, index: number) => {
+                            const moduleShortcode = `${course.shortcode}${index + 1}`;
+                            if (coursePreferences[moduleShortcode]?.isHidden) {
+                              hiddenCount += 1;
+                            }
+                          },
+                        );
                       }
                     });
 

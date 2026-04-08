@@ -74,3 +74,4 @@ dist/
 web-build/
 
 .env.local
+/.github/agents

@@ -420,7 +420,6 @@ export const CourseFileListItem = memo(
         accessibilityLabel={accessibilityLabel}
         disabled={disabled}
         onLongPress={showContextMenuOnLongPress ? undefined : onLongPress}
-        accessibilityLabel={accessibilityLabel}
         onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
         isDownloaded={isDownloaded && !isCheckingDownloadStatus}
         downloadProgress={downloadProgress}
