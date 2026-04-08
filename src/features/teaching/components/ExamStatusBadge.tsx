@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamStatusEnum } from '@polito/api-client';
+import { ExamStatusEnum } from '@polito/student-api-client';
 
 import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { lightTheme } from '../../../core/themes/light';

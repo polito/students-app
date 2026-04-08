@@ -1,4 +1,7 @@
-import { CourseDirectory, CourseDirectoryEntry } from '@polito/api-client';
+import {
+  CourseDirectory,
+  CourseDirectoryEntry,
+} from '@polito/student-api-client';
 
 export const isDirectory = (
   obj: CourseDirectoryEntry,

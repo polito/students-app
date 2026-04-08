@@ -1,6 +1,5 @@
 import { Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
-import { TemporaryDirectoryPath } from 'react-native-fs';
 
 import {
   BASE_PATH,
@@ -9,11 +8,12 @@ import {
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
   TicketsApi,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData, rethrowApiError } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
+import { cacheDirectory } from '../storage/fileSystem';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
 export const TICKET_QUERY_PREFIX = 'ticket';
@@ -70,6 +70,27 @@ export const useReplyToTicket = (ticketId: number) => {
       return invalidatesQueries.forEach(queryKey =>
         client.invalidateQueries({ queryKey }),
       );
+    },
+  });
+};
+
+export const useGiveTicketReplyFeedback = (
+  ticketId: number,
+  replyId: number,
+) => {
+  const client = useQueryClient();
+  const ticketsClient = useTicketsClient();
+
+  return useMutation({
+    mutationFn: (positive: boolean) =>
+      ticketsClient.setTicketReplyFeedback({ ticketId, replyId, positive }),
+    onSuccess(_data, positive) {
+      if (positive) {
+        client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
+      }
+      client.invalidateQueries({
+        queryKey: [TICKET_QUERY_PREFIX, ticketId],
+      });
     },
   });
 };
@@ -141,7 +162,7 @@ export const useGetTicketReplyAttachment = (
       ReactNativeBlobUtil.config({
         fileCache: true,
         path:
-          TemporaryDirectoryPath +
+          cacheDirectory +
           Platform.select({ android: '/', ios: '' }) +
           fileName,
       })
@@ -173,7 +194,7 @@ export const useGetTicketAttachment = (
       ReactNativeBlobUtil.config({
         fileCache: true,
         path:
-          TemporaryDirectoryPath +
+          cacheDirectory +
           Platform.select({ android: '/', ios: '' }) +
           fileName,
       })

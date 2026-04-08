@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next';
 
 import {
   CourseOverview as ApiCourseOverview,
+  CourseAllOfVcOtherCourses,
   CourseDirectory,
   CourseDirectoryEntry,
   CourseFileOverview,
   CourseModuleEdition,
   CoursePreferencesRequest,
-  CourseVcOtherCoursesInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import {
   useMutation,
   useQueries,
@@ -21,6 +21,7 @@ import {
 
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { isCourseDetailed } from '../../features/courses/utils/courses';
+import { stripIdInParentheses } from '../../utils/files';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
@@ -57,7 +58,7 @@ const setupCourses = (
   courses?.forEach(c => {
     const newC = c as CourseOverview;
     const hasDetails = isCourseDetailed(newC);
-    // Corsi senza moduli: shortcode + '1', corsi con moduli: shortcode
+    // Courses without modules: shortcode + '1'; courses with modules: shortcode
     newC.uniqueShortcode =
       c.modules && c.modules.length > 0 ? c.shortcode : c.shortcode + '1';
 
@@ -256,7 +257,7 @@ const isFile = (
 ): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
 
 /**
- * Assigns a location to each file
+ * Assigns a location to each file (folder path segments without "(number)" id suffix).
  */
 const computeFileLocations = (
   directoryContent: CourseDirectoryEntry[],
@@ -267,13 +268,18 @@ const computeFileLocations = (
     if (isFile(item)) {
       result.push({ ...item, location });
     } else {
+      const segmentName = stripIdInParentheses(item.name);
       result.push({
         ...item,
+        location:
+          location.length === 1
+            ? location + segmentName
+            : location + '/' + segmentName,
         files: computeFileLocations(
           item.files,
           location.length === 1
-            ? location + item.name
-            : location + '/' + item.name,
+            ? location + segmentName
+            : location + '/' + segmentName,
         ),
       });
     }
@@ -394,6 +400,23 @@ const findDirectory = (
   return result;
 };
 
+export const getFlattenedCourseFiles = (
+  content: CourseDirectoryContentWithLocations[],
+  directoryId?: string,
+): CourseFileOverviewWithLocation[] => {
+  if (!directoryId) {
+    return flattenFiles(content);
+  }
+  const dirContent = findDirectory(
+    directoryId,
+    content as CourseDirectoryEntry[],
+  );
+  if (!dirContent) {
+    return [];
+  }
+  return flattenFiles(dirContent as CourseDirectoryContentWithLocations[]);
+};
+
 export const useGetCourseAssignments = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
@@ -454,7 +477,7 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (CourseModuleEdition | CourseVcOtherCoursesInner)[],
+  relatedVCs: (CourseModuleEdition | CourseAllOfVcOtherCourses)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -499,7 +522,7 @@ export const useGetCourseLectures = (courseId: number) => {
 
   const relatedVCDefinitions: (
     | CourseModuleEdition
-    | CourseVcOtherCoursesInner
+    | CourseAllOfVcOtherCourses
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],
   );

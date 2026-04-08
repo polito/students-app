@@ -25,7 +25,7 @@ import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { ExamStatusEnum } from '@polito/api-client';
+import { ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -259,7 +259,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkToMoreCount={
               coursesQuery.data
                 ? (() => {
-                    // Calcola gli elementi nascosti direttamente
+                    // Compute hidden items directly
                     let hiddenCount = 0;
 
                     coursesQuery.data.forEach(course => {

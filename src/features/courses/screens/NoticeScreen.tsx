@@ -37,9 +37,9 @@ export const NoticeScreen = ({ route }: Props) => {
       clearNotificationScope([
         'teaching',
         'courses',
-        courseId.toString(),
+        `${courseId}`,
         'notices',
-        noticeId,
+        `${noticeId}`,
       ]);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),

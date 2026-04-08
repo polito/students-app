@@ -2,13 +2,13 @@ import { useTranslation } from 'react-i18next';
 
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { CourseStaffInner } from '@polito/api-client';
+import { CourseAllOfStaff } from '@polito/student-api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 
 interface StaffListItemProps {
-  staff: CourseStaffInner;
+  staff: CourseAllOfStaff;
   /**
    * Index of the item in the list (0-based). Used for accessibility.
    */

@@ -29,7 +29,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { Person } from '@polito/api-client';
+import { Person } from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -90,7 +90,11 @@ export const CourseInfoScreen = () => {
     courseQuery.data?.staff.map(s => s.id),
   );
 
-  const unreadsCurrentYear = getUnreadsCount(['teaching', 'courses', courseId]);
+  const unreadsCurrentYear = getUnreadsCount([
+    'teaching',
+    'courses',
+    `${courseId}`,
+  ]);
   const unreadsPrevEditions =
     (getUnreadsCountPerCourse(null, editions) ?? 0) - (unreadsCurrentYear ?? 0);
 
@@ -131,7 +135,7 @@ export const CourseInfoScreen = () => {
   const menuActions = useMemo(() => {
     if (!editions) return [];
     return editions.map(e => {
-      const editionsCount = getUnreadsCount(['teaching', 'courses', e.id]);
+      const editionsCount = getUnreadsCount(['teaching', 'courses', `${e.id}`]);
       return {
         id: `${e.id}`,
         title: e.year.toString(),

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import { PlaceOverview } from '@polito/api-client';
-import { PersonOverview } from '@polito/api-client';
+import { PlaceOverview } from '@polito/student-api-client';
+import { PersonOverview } from '@polito/student-api-client';
 
 import { AgendaTypesFilterState } from '~/features/agenda/types/AgendaTypesFilterState.ts';
 import {
@@ -23,7 +23,6 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
-  'onboardingStep',
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
@@ -31,6 +30,9 @@ export const editablePreferenceKeys = [
   'hideGrades',
   'loginUid',
   'politoAuthnEnrolmentStatus',
+  'fileStorageLocation',
+  'customStoragePath',
+  'customStorageDisplayPath',
 ] as const;
 
 export type PreferenceKey = (typeof editablePreferenceKeys)[number];
@@ -42,7 +44,6 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
-  'onboardingStep',
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
@@ -69,7 +70,6 @@ export interface PreferencesContextBase {
   };
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
-  onboardingStep?: number;
   emailGuideRead?: boolean;
   placesSearched: PlaceOverview[];
   agendaScreen: {
@@ -101,6 +101,9 @@ export interface PreferencesContextBase {
     insertedDeviceName?: string;
     hideInitialPrompt?: boolean;
   };
+  fileStorageLocation?: 'internal' | 'custom';
+  customStoragePath?: string;
+  customStorageDisplayPath?: string;
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {

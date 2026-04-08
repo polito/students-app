@@ -86,7 +86,6 @@ export const FileListItem = ({
   const { t } = useTranslation();
 
   const downloadLabel = t(`common.downloadStatus.${isDownloaded}`);
-
   const isDisabled = useOfflineDisabled(() => !isDownloaded);
   return (
     <ListItem
@@ -95,16 +94,18 @@ export const FileListItem = ({
       leadingItem={
         <View>
           <Icon icon={getIconFromMimeType(mimeType)} size={fontSizes['2xl']} />
-          {downloadProgress != null ? (
+          {downloadProgress != null &&
+          (downloadProgress < 1 || !isDownloaded) ? (
             <View style={styles.downloadedIconContainer}>
               <ProgressIndicator
-                progress={downloadProgress}
+                progress={Math.min(1, downloadProgress)}
                 size={12}
                 color={palettes.secondary[600]}
               />
             </View>
           ) : (
             isDownloaded &&
+            (downloadProgress == null || downloadProgress >= 1) &&
             (!isCorrupted ? (
               <View style={styles.downloadedIconContainer}>
                 <Icon
@@ -126,7 +127,7 @@ export const FileListItem = ({
         </View>
       }
       subtitle={subtitle}
-      disabled={isDisabled}
+      disabled={isDisabled || rest.disabled}
       {...rest}
     />
   );

@@ -3,7 +3,7 @@ import {
   CourseStatistics,
   GetCourseStatisticsRequest,
   OfferingApi,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 

@@ -4,7 +4,7 @@ import {
   Lecture as ApiLecture,
   LecturesApi,
   ResponseError,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';

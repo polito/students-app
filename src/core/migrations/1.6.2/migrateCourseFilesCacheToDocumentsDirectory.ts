@@ -1,14 +1,13 @@
-import {
-  CachesDirectoryPath,
-  mkdir,
-  moveFile,
-  readDir,
-  unlink,
-} from 'react-native-fs';
-
 import { splitNameAndExtension } from '../../../utils/files';
 import { PUBLIC_APP_DIRECTORY_PATH } from '../../constants';
 import { PreferencesContextProps } from '../../contexts/PreferencesContext';
+import {
+  cacheDirectory,
+  copyAsync,
+  deleteAsync,
+  makeDirectoryAsync,
+  readDirectoryWithInfo,
+} from '../../storage/fileSystem';
 
 export const migrateCourseFilesCacheToDocumentsDirectory = async (
   preferences: PreferencesContextProps,
@@ -19,33 +18,32 @@ export const migrateCourseFilesCacheToDocumentsDirectory = async (
   }
 
   try {
-    const courseCachesPath = [CachesDirectoryPath, username, 'Courses'].join(
-      '/',
-    );
-    const courseCaches = await readDir(courseCachesPath);
+    const courseCachesPath = [cacheDirectory, username, 'Courses'].join('/');
+    const courseCaches = await readDirectoryWithInfo(courseCachesPath);
     for (const courseCache of courseCaches) {
-      if (courseCache.isDirectory()) {
+      if (courseCache.isDirectory) {
         const newCourseCachePath = [
           PUBLIC_APP_DIRECTORY_PATH,
           username,
           'Courses',
           courseCache.name,
         ].join('/');
-        await mkdir(newCourseCachePath);
-        const files = await readDir(courseCache.path);
+        await makeDirectoryAsync(newCourseCachePath);
+        const files = await readDirectoryWithInfo(courseCache.path);
         for (const courseFile of files) {
-          if (courseFile.isFile()) {
+          if (!courseFile.isDirectory) {
             const [name, extension] = splitNameAndExtension(courseFile.name);
             const newPath = [newCourseCachePath, `(${name}).${extension}`].join(
               '/',
             );
-            await moveFile(courseFile.path, newPath);
+            await copyAsync(courseFile.path, newPath);
+            await deleteAsync(courseFile.path);
           }
         }
-        await unlink(courseCache.path);
+        await deleteAsync(courseCache.path);
       }
     }
-    await unlink(courseCachesPath);
+    await deleteAsync(courseCachesPath);
   } catch (_) {
     // Empty cache, don't transfer
   }

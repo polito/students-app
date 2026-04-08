@@ -18,6 +18,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { shadeColor } from '@lib/ui/utils/colors';
 
+import { IconWithProgress } from '../../../src/core/components/IconWithProgress';
 import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
@@ -27,7 +28,7 @@ interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
-  title: string;
+  title?: string;
   rightExtra?: ReactElement;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
@@ -36,6 +37,7 @@ interface Props extends TouchableHighlightProps {
   success?: boolean;
   hint?: string;
   textStyle?: TextStyle;
+  progress?: number;
 }
 
 /**
@@ -56,6 +58,7 @@ export const CtaButton = ({
   containerStyle,
   variant = 'filled',
   textStyle,
+  progress,
   ...rest
 }: Props) => {
   const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
@@ -163,40 +166,70 @@ export const CtaButton = ({
           {/* {!loading && ( */}
           {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
           {/* )} */}
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {icon && Number(accessibility?.fontSize) < 150 && (
-              <Icon
-                icon={icon}
-                size={fontSizes.xl}
-                color={variant === 'filled' ? colors.white : color}
-                style={{ marginRight: spacing[2] }}
-              />
-            )}
-            <TextWithLinks
-              style={[
-                styles.textStyle,
-                variant === 'outlined' && {
-                  borderColor: palettes.primary[400],
-                },
-                {
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: title ? undefined : 'center',
+            }}
+          >
+            {icon &&
+              Number(accessibility?.fontSize) < 150 &&
+              (progress !== undefined ? (
+                <View
+                  style={{
+                    marginRight: title ? spacing[2] : 0,
+                    paddingHorizontal: spacing[1],
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <IconWithProgress
+                    icon={icon}
+                    size={fontSizes.xl}
+                    color={variant === 'filled' ? colors.white : color}
+                    progress={progress}
+                    progressColor={variant === 'filled' ? colors.white : color}
+                  />
+                </View>
+              ) : (
+                <Icon
+                  icon={icon}
+                  size={fontSizes.xl}
+                  color={variant === 'filled' ? colors.white : color}
+                  style={{
+                    marginRight: title ? spacing[2] : 0,
+                    paddingHorizontal: spacing[1],
+                  }}
+                />
+              ))}
+            {title ? (
+              <TextWithLinks
+                style={[
+                  styles.textStyle,
+                  variant === 'outlined' && {
+                    borderColor: palettes.primary[400],
+                  },
+                  {
+                    color: variant === 'filled' ? colors.white : color,
+                  },
+                  disabled
+                    ? { color: success ? color : colors.disableTitle }
+                    : undefined,
+                  textStyle,
+                ]}
+                baseStyle={{
+                  fontWeight: fontWeights.medium,
                   color: variant === 'filled' ? colors.white : color,
-                },
-                disabled
-                  ? { color: success ? color : colors.disableTitle }
-                  : undefined,
-                textStyle,
-              ]}
-              baseStyle={{
-                fontWeight: fontWeights.medium,
-                color: variant === 'filled' ? colors.white : color,
-                ...(disabled && {
-                  color: success ? color : colors.disableTitle,
-                }),
-              }}
-              isCta={true}
-            >
-              {title}
-            </TextWithLinks>
+                  ...(disabled && {
+                    color: success ? color : colors.disableTitle,
+                  }),
+                }}
+                isCta={true}
+              >
+                {title}
+              </TextWithLinks>
+            ) : null}
             {rightExtra && rightExtra}
           </View>
         </View>

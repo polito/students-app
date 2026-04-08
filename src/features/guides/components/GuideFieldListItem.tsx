@@ -5,7 +5,7 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { GuideField } from '@polito/api-client';
+import { GuideField } from '@polito/student-api-client';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';

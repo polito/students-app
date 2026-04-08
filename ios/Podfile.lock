@@ -34,6 +34,8 @@ PODS:
     - Yoga
   - ExpoAsset (11.1.7):
     - ExpoModulesCore
+  - ExpoFileSystem (18.1.11):
+    - ExpoModulesCore
   - ExpoModulesCore (2.4.2):
     - DoubleConversion
     - glog
@@ -1727,6 +1729,8 @@ PODS:
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
+  - react-native-saf-x (2.2.3):
+    - React-Core
   - react-native-safe-area-context (5.6.2):
     - DoubleConversion
     - glog
@@ -2739,9 +2743,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - SDWebImage (5.21.3):
-    - SDWebImage/Core (= 5.21.3)
-  - SDWebImage/Core (5.21.3)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
   - SDWebImageAVIFCoder (0.11.1):
     - libavif/core (>= 0.11.0)
     - SDWebImage (~> 5.10)
@@ -2761,6 +2765,7 @@ DEPENDENCIES:
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSQLite (from `../node_modules/expo-sqlite/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
@@ -2820,6 +2825,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-pdf-light (from `../node_modules/react-native-pdf-light`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
+  - react-native-saf-x (from `../node_modules/react-native-saf-x`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2916,6 +2922,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
+  ExpoFileSystem:
+    :path: "../node_modules/expo-file-system/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoSQLite:
@@ -3023,6 +3031,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pdf-light"
   react-native-render-html:
     :path: "../node_modules/react-native-render-html"
+  react-native-saf-x:
+    :path: "../node_modules/react-native-saf-x"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -3137,6 +3147,7 @@ SPEC CHECKSUMS:
   EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
   Expo: c4afae95ee841ee5c30bde11937ec6732dee3169
   ExpoAsset: ef06e880126c375f580d4923fdd1cdf4ee6ee7d6
+  ExpoFileSystem: 7f92f7be2f5c5ed40a7c9efc8fa30821181d9d63
   ExpoModulesCore: e0409d8c674a651a183e941be663e1966b49e2a2
   ExpoSQLite: 14c1c8aa6cf5b30b33759f14307b4eb84e806277
   ExpoWebBrowser: dc39a88485f007e61a3dff05d6a75f22ab4a2e92
@@ -3209,6 +3220,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: f79b095ad2f207028f17626dd7aaf8411c42accc
   react-native-pdf-light: 53139b084304650c3495dd8765e43d363d30bfce
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
+  react-native-saf-x: 684113757246eb8f86d2bae21d965652f78f8eeb
   react-native-safe-area-context: 0b8555c40461feb7198e999912a3446602e7c601
   react-native-video: 8b867791128487bf82c9b6070ceddd2697bfabec
   React-NativeModulesApple: d94850b316446b0c39a82eb278d6efaa1a634055
@@ -3261,7 +3273,7 @@ SPEC CHECKSUMS:
   RNScreens: 7e56b051227a1a11c3068849d1a9a5dd457537df
   RNSentry: 0f61ae3c111d9129a978aeedd1fa05d0cd2307a9
   RNSVG: 8a1054afe490b5d63b9792d7ae3c1fde8c05cdd0
-  SDWebImage: 16309af6d214ba3f77a7c6f6fdda888cb313a50a
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   SDWebImageAVIFCoder: afe194a084e851f70228e4be35ef651df0fc5c57
   SDWebImageWebPCoder: 0e06e365080397465cc73a7a9b472d8a3bd0f377
   Sentry: e1b49e5f49367ff211b25c431a60e2bd83b792aa

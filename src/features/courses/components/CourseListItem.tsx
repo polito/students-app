@@ -202,18 +202,12 @@ export const CourseListItem = ({
       (course.cfu !== null && course.cfu !== undefined
         ? `${course.cfu} ${t('common.credits').toLowerCase()}`
         : '') +
-      (!course.isInPersonalStudyPlan
+      (course.enrollmentRole === 'viewer'
         ? ` • ${t('courseListItem.extra')} • ${course.year}`
         : '') +
       (course.isOverBooking ? ` • ${t('courseListItem.overbooking')}` : '')
     );
-  }, [
-    course.cfu,
-    course.isInPersonalStudyPlan,
-    course.isOverBooking,
-    course.year,
-    t,
-  ]);
+  }, [course.cfu, course.enrollmentRole, course.isOverBooking, course.year, t]);
 
   const accessibleExtraText = useMemo(() => {
     return IS_ANDROID ? '' : t('coursesScreen.longPress');

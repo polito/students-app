@@ -159,11 +159,28 @@
     "department": "Department",
     "desk": "Desk",
     "done": "Done",
+    "cancelSelection": "Cancel selection",
+    "gotIt": "Got it",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "selectDirectories": "Select directories",
+    "hideFolders": "View by files",
+    "showFolders": "View by folders",
+    "selectEverything": "Select everything",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
     "doubleTapToDeactivate": "Tap twice to deactivate",
     "download": "Download",
     "downloadError": "Something went wrong with the download",
+    "downloadInProgress": "Download in progress",
+    "downloadInProgressCount": "Download in progress {{current}}/{{total}}",
+    "downloadLargeFilesPleaseWait": "Some files are very large, please wait.",
+    "downloadProgress": "Downloading {{current}} of {{total}}",
+    "downloadCompleted": "All files downloaded successfully",
+    "downloadCompletedShort": "Download completed",
+    "removeInProgress": "Removing files",
+    "removeCompletedShort": "Files removed",
+    "downloadCompletedWithErrors": "{{successCount}} files downloaded, {{errorCount}} failed",
     "downloadStatus": {
       "false": "Not downloaded",
       "true": "Downloaded"
@@ -237,6 +254,7 @@
     "navigate": "Navigate",
     "newItems": "{{count}} new item",
     "newItems_plural": "{{count}} new items",
+    "newest": "Newest",
     "newVersionTitle": "New version available!",
     "openInBrowser": "Opens in browser",
     "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it to access all the new features and avoid malfunctions.",
@@ -254,6 +272,9 @@
     "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
+    "oldest": "Oldest",
+    "yes": "Yes",
+    "no": "No",
     "or": "or",
     "open": "Open",
     "openSettings": "Open settings",
@@ -267,6 +288,8 @@
       "true": "Double tap to close"
     },
     "options": "Options",
+    "orderByNameAZ": "Name A-Z",
+    "orderByNameZA": "Name Z-A",
     "other": "Other",
     "pause": "Pause",
     "period": "Period",
@@ -281,11 +304,16 @@
     "refresh": "Refresh",
     "remaining": "{{value}} remaining",
     "remove": "Remove",
+    "removeAll": "Remove all",
+    "removeAllDownloaded": "Remove all downloaded files",
+    "downloadAttachment": "Download attachment",
+    "removeAttachment": "Remove attachment",
     "reset": "Reset",
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
     "search": "Search",
+    "select": "Select",
     "seat": "Seat",
     "selectAnOption": "Please select an option",
     "series": "Series",
@@ -386,28 +414,50 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} files"
+    "subtitle_plural": "{{count}} files",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} files",
+    "folderCount": "{{count}} folder",
+    "folderCount_plural": "{{count}} folders",
+    "empty": "Empty",
+    "unavailableDuringDownload": "folder not available during download"
   },
   "courseDirectoryScreen": {
+    "selectFiles": "Select files",
     "clearSearch": "Clear search",
     "emptyRootFolder": "There are no files",
     "emptyFolder": "The folder is empty",
     "noResult": "No results found",
     "navigateRecentFiles": "View recent",
-    "search": "Search"
+    "search": "Search",
+    "downloadSelected": "Download selected files",
+    "stopDownload": "Stop download"
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
     "reDownloadFile": "Redownload file",
-    "fileSavedDocumentsPath": "File saved in the documents folder",
-    "fileSaved": "File saved in {{cachedFilePath}}"
+    "fileSavedPrefix": "File saved in"
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
     "empty": "There are no files",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
-    "title": "Files"
+    "removeFilesTitle": "Remove files",
+    "removeFileConfirmation": "The file will be removed locally from your device. Do you want to continue?",
+    "removeFilesConfirmation": "The {{count}} files will be removed locally from your device. Do you want to continue?",
+    "title": "Files",
+    "updateDownloadedTitle": "Update downloaded files",
+    "updateDownloadedMessage": "{{count}} selected files are already downloaded. Do you want to update them?",
+    "updateDownloadedInfoTitle": "Download",
+    "updateDownloadedInfoMessage": "1 already downloaded file will be updated and 1 new file will be downloaded.",
+    "updateDownloadedInfoMessageOnlyUpdate": "1 already downloaded file will be updated.",
+    "updateDownloadedInfoMessageOnlyUpdates": "{{downloadedCount}} already downloaded files will be updated.",
+    "updateDownloadedInfoMessageOneUpdate": "1 already downloaded file will be updated and {{newCount}} new files will be downloaded.",
+    "updateDownloadedInfoMessageOneDownload": "{{downloadedCount}} already downloaded files will be updated and 1 new file will be downloaded.",
+    "updateDownloadedInfoMessages": "{{downloadedCount}} already downloaded files will be updated and {{newCount}} new files will be downloaded.",
+    "downloadOnlyNew": "New only",
+    "downloadAll": "Download all"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -544,7 +594,9 @@
     "showInExtractsSubtitle": "In home screen and agenda"
   },
   "courseScreen": {
-    "fileDownloadFailed": "The download failed. Please try again later."
+    "fileDownloadFailed": "The download failed. Please try again later.",
+    "fileIntegrityCheckFailed": "File integrity check failed. The downloaded file may be corrupted.",
+    "fileNotFound": "File not found on device. Please try downloading it again."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Join live streaming",
@@ -884,27 +936,6 @@
     "section": "section",
     "title": "Offering"
   },
-  "onboardingScreen": {
-    "steps": {
-      "0": {
-        "content": "You can customize what you see and make your agenda more organized by choosing the courses to view, the colors and the icons.",
-        "title": "What has changed?"
-      },
-      "1": {
-        "content": "You will find your way around the Polytechnic more easily thanks to the new system of maps and filters to find what you are looking for.",
-        "title": "What has changed?"
-      },
-      "2": {
-        "content": "Your comments help us improve: you can send feedback on the new app by opening a ticket that will go directly to the development team.",
-        "title": "How to give feedback?"
-      },
-      "3": {
-        "content": "To have access to your Polito email, follow the “Configure your email” guide in the new “Guides” section.",
-        "title": "How to configure email?"
-      }
-    },
-    "title": "What's new"
-  },
   "personScreen": {
     "call": "Call",
     "contacts": "Contacts",
@@ -1004,7 +1035,19 @@
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings",
     "securityTitle": "Security",
-    "authenticatorTitle": "PoliTO Authenticator"
+    "authenticatorTitle": "PoliTO Authenticator",
+    "storageTitle": "File storage",
+    "storageInternal": "App internal",
+    "storageCustom": "Custom path",
+    "storageInternalDescription": "Files are saved in the app's private folder",
+    "storageCustomDescription": "Files are also copied to the chosen folder",
+    "storageChangeConfirmMessage": "All locally downloaded course files will be removed. You will need to re-download them if you confirm.",
+    "storageChangeConfirmTitle": "Change storage location?",
+    "storageChanging": "Changing storage...",
+    "storageCustomSet": "Custom folder set",
+    "storageInternalSet": "Internal storage set",
+    "storageMovingFiles": "Moving files...",
+    "storageMovedFiles": "{{count}} files moved"
   },
   "ssoScreen": {
     "ssoButton": "Sign in with Single-Sign-On",
@@ -1047,6 +1090,10 @@
     "headerBackTitle": "Tickets",
     "new": "New ticket",
     "pickFileTitle": "You can include one attachment per message",
+    "virtualOperator": "VIRTUAL OPERATOR",
+    "feedbackTitle": "You have spoken with a virtual operator",
+    "feedbackDescription": "This new service was created to give you faster and more effective support. If you need further assistance, our team will respond to you as soon as possible!",
+    "feedbackQuestion": "Are you satisfied with the answer?",
     "reply": "Reply",
     "sendFirstMessage": "Ask your question",
     "sendError": "There was an error while sending the message. Try again.",

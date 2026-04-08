@@ -409,14 +409,31 @@
     "department": "Dipartimento",
     "desk": "Cattedra",
     "done": "Fatto",
+    "cancelSelection": "Annulla selezione",
+    "gotIt": "Ho capito",
+    "selectAll": "Seleziona tutto",
+    "deselectAll": "Deseleziona tutto",
+    "selectDirectories": "Seleziona directory",
+    "hideFolders": "Visualizza per file",
+    "showFolders": "Visualizza per cartelle",
+    "selectEverything": "Seleziona tutto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
     "downloadClick": "Clicca 2 volte per scaricare",
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadInProgress": "Download in corso",
+    "downloadInProgressCount": "Download in corso {{current}}/{{total}}",
+    "downloadLargeFilesPleaseWait": "Alcuni file sono molto grandi, attendere.",
+    "downloadProgress": "Scaricando {{current}} di {{total}}",
+    "downloadCompleted": "Tutti i file scaricati con successo",
+    "downloadCompletedShort": "Download completato",
+    "removeInProgress": "Rimozione file in corso",
+    "removeCompletedShort": "File rimossi",
+    "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti",
     "downloadStatus": {
-      "false": "Non scaricato",
+      "false": "Non scaricati",
       "true": "Scaricato"
     },
     "duration": "Durata",
@@ -489,6 +506,7 @@
     "navigate": "Naviga",
     "newItems": "{{count}} nuovo elemento",
     "newItems_plural": "{{count}} nuovi elementi",
+    "newest": "Data più recente",
     "newVersionTitle": "Nuova versione disponibile!",
     "openInBrowser": "Apre nel browser",
     "newVersionBody": "È disponibile una nuova versione di PoliTO Students ({{newVersion}}).\n\nAggiornala per avere a disposizione tutte le nuove funzionalità e non incorrere in malfunzionamenti.",
@@ -506,6 +524,9 @@
     "objectives": "Obiettivi formativi",
     "of": "Su",
     "ok": "Ok",
+    "oldest": "Meno recente",
+    "yes": "Sì",
+    "no": "No",
     "or": "oppure",
     "open": "Apri",
     "openClick": "Clicca 2 volte per aprire",
@@ -521,6 +542,8 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "orderByNameAZ": "Nome A-Z",
+    "orderByNameZA": "Nome Z-A",
     "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
@@ -535,12 +558,17 @@
     "refresh": "Aggiorna",
     "remaining": "{{value}} rimanenti",
     "remove": "Rimuovi",
+    "removeAll": "Rimuovi tutti",
+    "removeAllDownloaded": "Rimuovi tutti i file scaricati",
+    "downloadAttachment": "Scarica allegato",
+    "removeAttachment": "Rimuovi allegato",
     "reset": "Reimposta",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
     "search": "Cerca",
     "seat": "Postazione",
+    "select": "Seleziona",
     "selectAnOption": "Seleziona una delle opzioni",
     "selectColor": "Seleziona il colore",
     "series": "Serie",
@@ -673,22 +701,32 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} file"
+    "subtitle_plural": "{{count}} file",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} file",
+    "folderCount": "{{count}} cartella",
+    "folderCount_plural": "{{count}} cartelle",
+    "empty": "Vuota",
+    "unavailableDuringDownload": "cartella non accessibile durante il download"
   },
   "courseDirectoryScreen": {
+    "selectFiles": "Seleziona file",
     "clearSearch": "Cancella ricerca",
     "emptyRootFolder": "Non ci sono file",
     "emptyFolder": "La cartella è vuota",
     "noResult": "Nessun risultato trovato",
     "navigateRecentFiles": "Sfoglia file recenti",
-    "search": "Cerca"
+    "search": "Cerca",
+    "downloadSelected": "Scarica file selezionati",
+    "stopDownload": "Ferma download"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file",
     "downloadPending": "Download in corso",
     "fileSavedDocumentsPath": "File salvato nella cartella documenti",
-    "fileSaved": "File salvato in {{cachedFilePath}}"
+    "fileSaved": "File salvato in {{cachedFilePath}}",
+    "fileSavedPrefix": "File salvato in"
   },
   "courseFilesTab": {
     "openDirectory": "Doppio click per aprire la cartella",
@@ -698,7 +736,21 @@
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale",
-    "emptyState": "Non ci sono file"
+    "emptyState": "Non ci sono file",
+    "removeFilesTitle": "Rimuovi file",
+    "removeFileConfirmation": "Il file verrà rimosso localmente dal tuo dispositivo. Vuoi continuare?",
+    "removeFilesConfirmation": "I {{count}} file verranno rimossi localmente dal tuo dispositivo. Vuoi continuare?",
+    "updateDownloadedTitle": "Aggiorna file scaricati",
+    "updateDownloadedMessage": "{{count}} file selezionati sono già scaricati. Vuoi aggiornarli?",
+    "updateDownloadedInfoTitle": "Download",
+    "updateDownloadedInfoMessage": "1 file già scaricato verrà aggiornato e 1 nuovo file verrà scaricato.",
+    "updateDownloadedInfoMessageOnlyUpdate": "1 file già scaricato verrà aggiornato.",
+    "updateDownloadedInfoMessageOnlyUpdates": "{{downloadedCount}} file già scaricati verranno aggiornati.",
+    "updateDownloadedInfoMessageOneUpdate": "1 file già scaricato verrà aggiornato e {{newCount}} nuovi file verranno scaricati.",
+    "updateDownloadedInfoMessageOneDownload": "{{downloadedCount}} file già scaricati verranno aggiornati e 1 nuovo file verrà scaricato.",
+    "updateDownloadedInfoMessages": "{{downloadedCount}} file già scaricati verranno aggiornati e {{newCount}} nuovi file verranno scaricati.",
+    "downloadOnlyNew": "Solo nuovi",
+    "downloadAll": "Scarica tutti"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -843,7 +895,9 @@
     "selectedIcon": "Icona selezionata"
   },
   "courseScreen": {
-    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi.",
+    "fileIntegrityCheckFailed": "Controllo integrità file fallito. Il file scaricato potrebbe essere corrotto.",
+    "fileNotFound": "Il file non è stato trovato sul dispositivo. Prova a riscaricarlo."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Collegati alla diretta",
@@ -1196,27 +1250,6 @@
     "master": "Laurea magistrale",
     "title": "Offerta formativa"
   },
-  "onboardingScreen": {
-    "steps": {
-      "0": {
-        "content": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone.",
-        "title": "Cosa è cambiato?"
-      },
-      "1": {
-        "content": "Ti orienterai con più facilità all'interno del Politecnico grazie al nuovo sistema di mappe e filtri per trovare ciò che cerchi.",
-        "title": "Cosa è cambiato?"
-      },
-      "2": {
-        "content": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo.",
-        "title": "Come dare un feedback?"
-      },
-      "3": {
-        "content": "Per avere accesso alla tua email Polito segui la guida “Configura la tua email” nella nuova sezione “Guide”.",
-        "title": "Come configurare l’email?"
-      }
-    },
-    "title": "Novità"
-  },
   "personScreen": {
     "noProfileImage": "Nessuna immagine di profilo",
     "call": "Chiama",
@@ -1321,7 +1354,19 @@
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni",
     "securityTitle": "Sicurezza",
-    "authenticatorTitle": "PoliTO Authenticator"
+    "authenticatorTitle": "PoliTO Authenticator",
+    "storageTitle": "Archiviazione file",
+    "storageInternal": "Interno app",
+    "storageCustom": "Percorso personalizzato",
+    "storageInternalDescription": "I file vengono salvati nella cartella privata dell'app",
+    "storageCustomDescription": "I file vengono copiati anche nella cartella scelta",
+    "storageChangeConfirmMessage": "Tutti i file dei corsi scaricati in locale verranno rimossi. Dovrai riscaricarli se confermi.",
+    "storageChangeConfirmTitle": "Cambiare posizione di archiviazione?",
+    "storageChanging": "Cambio storage in corso...",
+    "storageCustomSet": "Cartella personalizzata impostata",
+    "storageInternalSet": "Storage interno impostato",
+    "storageMovingFiles": "Spostamento file in corso...",
+    "storageMovedFiles": "{{count}} file spostati"
   },
   "ssoScreen": {
     "ssoButton": "Entra con Single-Sign-On",
@@ -1373,6 +1418,10 @@
     "pickFileTitle": "Puoi includere un allegato per messaggio",
     "reply": "Rispondi",
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
+    "virtualOperator": "OPERATORE VIRTUALE",
+    "feedbackTitle": "Hai parlato con un operatore virtuale",
+    "feedbackDescription": "Questo nuovo servizio nasce per darti un supporto più veloce ed efficace. Se hai bisogno di ulteriore assistenza, il nostro team ti risponderà al più presto!",
+    "feedbackQuestion": "La risposta ti soddisfa?",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
     "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"

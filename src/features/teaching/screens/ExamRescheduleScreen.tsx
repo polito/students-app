@@ -97,7 +97,7 @@ export const ExamRescheduleScreen = ({ navigation, route }: Props) => {
           left: Platform.select({ ios: left }),
           right,
           bottom: bottomBarHeight,
-          backgroundColor: colors.background, // da cambiare
+          backgroundColor: colors.background, // TODO: to be changed
           paddingTop: 10,
         }}
       >

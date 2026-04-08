@@ -1,6 +1,6 @@
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
-import { OfferingCourseOverview } from '@polito/api-client';
+import { OfferingCourseOverview } from '@polito/student-api-client';
 
 import { useDegreeContext } from '../contexts/DegreeContext';
 import { CourseTrailingItem } from './CourseTrailingItem';

@@ -3,7 +3,7 @@ import {
   type BookExamRequest,
   ExamsApi,
   type RescheduleExamRequest,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { isValidDate } from '../../utils/dates';

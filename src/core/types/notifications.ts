@@ -1,4 +1,4 @@
-import { Notification } from '@polito/api-client';
+import { Notification } from '@polito/student-api-client';
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 export interface RemoteMessage extends FirebaseMessagingTypes.RemoteMessage {
@@ -37,10 +37,10 @@ export interface UnreadNotificationsByScope {
     courses?: {
       [courseId: string]: {
         files?: {
-          [fileId: number]: Notification[];
+          [fileId: string]: Notification[];
         };
         notices?: {
-          [noticeId: number]: Notification[];
+          [noticeId: string]: Notification[];
         };
         lectures?: Notification[];
       };

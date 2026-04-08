@@ -13,7 +13,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -41,6 +41,7 @@ import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
+import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 
@@ -127,20 +128,20 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   useScreenTitle(ticket?.subject);
 
-  useEffect(() => {
+  const markAsReadIfNeeded = useCallback(async () => {
     if (!ticket) {
       return;
     }
-    clearNotificationScope([
-      'services',
-      'tickets',
-      ticket.id.toString(),
-    ] as unknown as Parameters<typeof clearNotificationScope>['0']); // TODO check PathExtractor type
-    if (ticket.unreadCount === 0) {
+    await clearNotificationScope(['services', 'tickets', ticket.id.toString()]);
+    if (!ticket.unreadCount) {
       return;
     }
     markAsRead();
   }, [markAsRead, clearNotificationScope, ticket]);
+
+  useEffect(() => {
+    markAsReadIfNeeded();
+  }, [markAsReadIfNeeded]);
 
   const headerRight = useCallback(
     () =>
@@ -160,6 +161,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
       ) ?? [],
     [ticket],
   );
+
+  const lastReply = replies[0];
 
   useEffect(() => {
     const changeStyle = () => {
@@ -251,7 +254,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      <TicketMessagingView ticketId={id} />
+      {lastReply?.needsFeedback ? (
+        <VirtualOperatorFeedbackBar ticketId={id} replyId={lastReply.id} />
+      ) : (
+        <TicketMessagingView ticketId={id} />
+      )}
     </Animated.View>
   );
 };

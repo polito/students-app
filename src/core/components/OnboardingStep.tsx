@@ -1,98 +1,101 @@
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import Video from 'react-native-video';
+import { ComponentType, ReactNode, useMemo, useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import FastImage from '@d11/react-native-fast-image';
+import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { HtmlView } from './HtmlView';
 
 interface Props {
-  stepNumber: number;
-  width: number;
+  title: string;
+  description?: string;
+  html: string;
+  cover?: string;
+  ScrollViewComponent?: ComponentType<any>;
+  children?: ReactNode;
 }
 
-export const OnboardingStep = ({ stepNumber, width }: Props) => {
-  const { t } = useTranslation();
+export const OnboardingStep = ({
+  title,
+  html,
+  cover,
+  ScrollViewComponent = ScrollView,
+  children,
+}: Props) => {
   const styles = useStylesheet(createStyles);
-  const { language } = usePreferencesContext();
+  const { shapes, spacing } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
+  const [coverAspectRatio, setCoverAspectRatio] = useState<number>();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const coverWidth = screenWidth - spacing[5] * 2;
 
-  const videoUrl = useMemo(() => {
-    return `https://video.polito.it/public/app/onboarding_step_${
-      stepNumber + 1
-    }_${Platform.OS}_${language}.mp4`;
-  }, [language, stepNumber]);
+  const htmlViewProps = useMemo(
+    () => ({
+      source: { html },
+      baseStyle: {
+        paddingHorizontal: spacing[5],
+        paddingVertical: spacing[1],
+        paddingBottom: spacing[2],
+      },
+    }),
+    [html, spacing],
+  );
 
   return (
-    <SafeAreaView>
-      <View style={[{ width }, styles.content]}>
-        <View style={styles.header}>
-          <Text variant="title" role="heading">
-            {t(`onboardingScreen.steps.${stepNumber}.title`)}
-          </Text>
-          <Text variant="prose" role="definition">
-            {t(`onboardingScreen.steps.${stepNumber}.content`)}
-          </Text>
-        </View>
-        <View style={styles.videoContainer}>
-          <Video
-            onBuffer={data => {
-              if (data.isBuffering) setIsLoading(true);
-              else setIsLoading(false);
+    <ScrollViewComponent
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
+      {cover && (
+        <View style={styles.coverImageContainer}>
+          <FastImage
+            source={{ uri: cover }}
+            style={{
+              borderRadius: shapes.lg,
+              width: coverWidth,
+              aspectRatio: coverAspectRatio ?? 16 / 9,
             }}
-            source={{
-              uri: videoUrl,
+            resizeMode={FastImage.resizeMode.cover}
+            onLoad={e => {
+              const { width: w, height: h } = e.nativeEvent;
+              if (w > 0) setCoverAspectRatio(w / h);
             }}
-            style={[styles.video, styles.loadingVideo]}
-            resizeMode="contain"
-            repeat={true}
           />
-          {isLoading && <ActivityIndicator style={styles.activityIndicator} />}
         </View>
+      )}
+      <View style={styles.header}>
+        <Text variant="title" role="heading">
+          {title}
+        </Text>
       </View>
-    </SafeAreaView>
+      <HtmlView props={htmlViewProps} variant="onboarding" />
+      {children}
+      <CtaButtonSpacer />
+    </ScrollViewComponent>
   );
 };
 
-const createStyles = ({ dark, spacing, palettes }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     content: {
-      paddingTop: spacing[5],
-      height: '100%',
-      gap: spacing[5],
-      paddingVertical: spacing[5],
+      paddingVertical: spacing[6],
     },
     header: {
       paddingHorizontal: spacing[5],
-      gap: spacing[5],
+      paddingTop: spacing[2],
+      gap: spacing[1],
     },
-    video: {
-      borderRadius: 25,
-      borderWidth: 1,
-      alignSelf: 'center',
-      aspectRatio: 1080 / 2340,
-      elevation: 4,
-      flexGrow: 1,
-      borderColor: Platform.select({
-        ios: dark ? palettes.gray[800] : palettes.gray[400],
-        android: 'transparent',
-      }),
-    },
-    loadingVideo: {
-      backgroundColor: dark ? palettes.gray[600] : palettes.gray[200],
-    },
-    activityIndicator: {
-      position: 'absolute',
-      alignSelf: 'center',
-    },
-    videoContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexGrow: 1,
+    coverImageContainer: {
+      paddingHorizontal: spacing[5],
+      marginBottom: spacing[2],
     },
   });
