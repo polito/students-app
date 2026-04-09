@@ -30,7 +30,11 @@
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale",
     "hideEvent": "Preferenze agenda",
-    "noHiddenEvents": "Non ci sono eventi nascosti"
+    "noHiddenEvents": "Non ci sono eventi nascosti",
+    "previousWeek": "Settimana precedente",
+    "nextWeek": "Settimana successiva",
+    "prevWeekHint": "Vai alla settimana precedente",
+    "nextWeekHint": "Vai alla settimana successiva"
   },
   "agendaDialog": {
     "hideEventTitle": "Nascondi evento",
@@ -46,6 +50,10 @@
     "previous week": "Settimana precedente",
     "totalEvents": "Numero prenotazioni settimanali",
     "noEvents": "Questa settimana non hai prenotazioni"
+  },
+  "agendaPreferencesScreen": {
+    "courseItem": "Corso",
+    "hiddenEventsHint": "Naviga agli eventi nascosti"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -66,7 +74,12 @@
       "virtualPlace": "Link sportello virtuale"
     },
     "nextWeek": "Prossima settimana",
-    "previousWeek": "Settimana precedente"
+    "previousWeek": "Settimana precedente",
+    "locationHint": "Visualizza la posizione sulla mappa",
+    "seatHint": "Naviga alla selezione del posto",
+    "checkInHint": "Valida la tua presenza nella sede della prenotazione",
+    "cancelHint": "Annulla la prenotazione, l'azione non è reversibile",
+    "checkInSuccess": "Check-in completato con successo"
   },
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
@@ -631,6 +644,8 @@
     "toTime": "alle",
     "document": "Allegato",
     "sizeExc": "File di dimensioni eccessive, massimo 32 MB",
+    "progressChart": "Grafico avanzamento",
+    "progressChartMulti": "Grafico avanzamento, primo valore {{first}}, secondo valore {{last}}",
     "first": "Primo",
     "second": "Secondo",
     "third": "Terzo",
@@ -660,7 +675,11 @@
     "searchHint": "Digita per cercare persone per nome",
     "searchPlaceholder": "Cerca docenti, personale e studenti",
     "searchResults": "Risultati di ricerca",
-    "title": "Contatti"
+    "title": "Contatti",
+    "noResultsFound": "Nessun risultato trovato",
+    "moreOptions": "Altre opzioni",
+    "moreOptionsHint": "Apre il menu contestuale per questo contatto",
+    "removeFromRecent": "Rimuovi dalle ricerche recenti"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -1024,7 +1043,8 @@
     "responsibilityDeclaration": "Dichiaro di prendere la responsabilità di quanto dichiarato",
     "requestReason": "Inserisci qui le tue motivazioni della richiesta di cambio data appello",
     "requestReasonTitle": "Puoi chiedere al titolare del corso di poter cambiare data del tuo appello",
-    "screenTitle": "Cambio data appello"
+    "screenTitle": "Cambio data appello",
+    "ctaDisabledHint": "Seleziona la dichiarazione di responsabilità per abilitare l'invio"
   },
   "examScreen": {
     "bookedCount": "Studenti prenotati",
@@ -1076,14 +1096,19 @@
     "guideSections": "Sezioni guida",
     "introduction": "Introduzione",
     "sectionsAvailable": "sezioni disponibili",
-    "title": "Guida"
+    "title": "Guida",
+    "fieldsLoading": "Campi in caricamento"
   },
   "guidesScreen": {
     "guidesList": "Lista guide",
     "tapToOpenGuide": "Tocca per aprire la guida",
     "title": "Guide",
     "total": "Sono presenti {{ total }} guide",
-    "unreadGuide": "non letta"
+    "unreadGuide": "non letta",
+    "listLoaded": "{{count}} guide caricate"
+  },
+  "hiddenEventsScreen": {
+    "restoreHint": "Ripristina gli eventi nascosti selezionati nell'agenda"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
@@ -1109,7 +1134,8 @@
     "endsAtDate": "Scadenza: ",
     "jobOffersList": "Lista offerte di lavoro",
     "jobOffersAvailable": "offerte di lavoro disponibili",
-    "title": "Offerte di lavoro"
+    "title": "Offerte di lavoro",
+    "listLoaded": "{{count}} offerte di lavoro caricate"
   },
   "jobOfferListItem": {
     "tapToViewDetails": "Tocca per visualizzare i dettagli dell'offerta"
@@ -1121,7 +1147,8 @@
     "courseFilesCta": "Vai al materiale del corso",
     "hideEventAlertTitle": "Nascondi Evento",
     "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
-    "hideEventButtonTitle": "Nascondi evento dall'agenda"
+    "hideEventButtonTitle": "Nascondi evento dall'agenda",
+    "hideEventHint": "Nasconde questa lezione dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"
@@ -1248,7 +1275,12 @@
     "bachelor": "Laurea triennale",
     "emptyState": "Nessun corso disponibile",
     "master": "Laurea magistrale",
-    "title": "Offerta formativa"
+    "title": "Offerta formativa",
+    "groupLabel": "{{name}}, {{count}} corsi",
+    "expandCollapseHint": "Tocca per espandere o collassare il gruppo di corsi",
+    "tapToViewCourse": "Tocca per visualizzare i dettagli del corso",
+    "coursesList": "{{count}} corsi",
+    "yearSelectorHint": "Tocca per cambiare l'anno accademico"
   },
   "personScreen": {
     "noProfileImage": "Nessuna immagine di profilo",
@@ -1259,7 +1291,9 @@
     "moreInfo": "Maggiori informazioni",
     "role": "Ruolo",
     "sentEmail": "Invia e-mail",
-    "totalCourses": "Sono presenti {{total}} corsi"
+    "totalCourses": "Sono presenti {{total}} corsi",
+    "callHint": "Apre il tastierino telefonico",
+    "emailHint": "Apre l'app di posta"
   },
   "placeCategories": {
     "classrooms": "Aule",
@@ -1372,12 +1406,17 @@
     "ssoButton": "Entra con Single-Sign-On",
     "ssoLink": "oppure entra con le tue credenziali"
   },
+  "staffScreen": {
+    "staffList": "Lista del personale, {{count}} membri"
+  },
   "surveysScreen": {
     "compiledEmptyState": "Non ci sono questionari compilati",
     "compiledTitle": "Questionari compilati",
     "title": "Questionari",
     "toBeCompiledEmptyState": "Non ci sono questionari da compilare",
-    "toBeCompiledTitle": "Questionari da compilare"
+    "toBeCompiledTitle": "Questionari da compilare",
+    "tapToOpenSurvey": "Doppio tap per aprire il questionario",
+    "surveysList": "Lista questionari, {{count}} elementi"
   },
   "teachingScreen": {
     "allCoursesHidden": "Hai nascosto tutti i tuoi corsi",

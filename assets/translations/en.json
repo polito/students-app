@@ -30,7 +30,11 @@
     "title": "Agenda",
     "weeklyLayout": "Weekly layout",
     "hideEvent": "Agenda preferences",
-    "noHiddenEvents": "There are no hidden events"
+    "noHiddenEvents": "There are no hidden events",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "prevWeekHint": "Go to previous week",
+    "nextWeekHint": "Go to next week"
   },
   "agendaDialog": {
     "hideEventTitle": "Hide event",
@@ -44,6 +48,10 @@
     "showInAgenda": "Show on the agenda",
     "previous week": "Previous week",
     "next week": "Next week"
+  },
+  "agendaPreferencesScreen": {
+    "courseItem": "Course",
+    "hiddenEventsHint": "Navigate to hidden events"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -62,7 +70,12 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
-    }
+    },
+    "locationHint": "View location on map",
+    "seatHint": "Navigate to seat selection",
+    "checkInHint": "Validates your presence at the booking location",
+    "cancelHint": "Cancels your booking, this action cannot be undone",
+    "checkInSuccess": "Check-in completed successfully"
   },
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
@@ -355,7 +368,9 @@
     "warning": "Warning",
     "year": "year",
     "yesterday": "Yesterday",
-    "sizeExc": "Excessive file size, maximum 32 MB"
+    "sizeExc": "Excessive file size, maximum 32 MB",
+    "progressChart": "Progress chart",
+    "progressChartMulti": "Progress chart, first value {{first}}, second value {{last}}"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -375,7 +390,11 @@
     "searchHint": "Type to search for people by name",
     "searchPlaceholder": "Search for teachers, staff and students",
     "searchResults": "Search results",
-    "title": "Contacts"
+    "title": "Contacts",
+    "noResultsFound": "No results found",
+    "moreOptions": "More options",
+    "moreOptionsHint": "Opens context menu for this contact",
+    "removeFromRecent": "Remove from recent searches"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
@@ -714,7 +733,8 @@
     "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
     "requestReason": "Enter your reasons for requesting a change of exam call date here",
     "requestReasonTitle": "You can ask the course holder if you can change the date of your exam call",
-    "screenTitle": "Exam call date change"
+    "screenTitle": "Exam call date change",
+    "ctaDisabledHint": "Check the responsibility declaration to enable submission"
   },
   "examScreen": {
     "bookedCount": "Booked students",
@@ -765,14 +785,19 @@
     "guideSections": "Guide sections",
     "introduction": "Introduction",
     "sectionsAvailable": "sections available",
-    "title": "Guide"
+    "title": "Guide",
+    "fieldsLoading": "Fields loading"
   },
   "guidesScreen": {
     "guidesList": "Guides list",
     "tapToOpenGuide": "Tap to open guide",
     "title": "Guides",
     "total": "There are {{ total }} guides",
-    "unreadGuide": "unread"
+    "unreadGuide": "unread",
+    "listLoaded": "{{count}} guides loaded"
+  },
+  "hiddenEventsScreen": {
+    "restoreHint": "Restores selected hidden events to the agenda"
   },
   "jobOfferScreen": {
     "application": "Application",
@@ -798,7 +823,8 @@
     "endsAtDate": "expiration: ",
     "jobOffersList": "Job offers list",
     "jobOffersAvailable": "job offers available",
-    "title": "Job offers"
+    "title": "Job offers",
+    "listLoaded": "{{count}} job offers loaded"
   },
   "jobOfferListItem": {
     "tapToViewDetails": "Tap to view job offer details"
@@ -810,7 +836,8 @@
     "courseFilesCta": "Go to course files",
     "hideEventAlertTitle": "Hide event",
     "hideEventAlertMessage": " You are hiding the {{ day }} {{ title }} event from {{ fromTime }} to {{ toTime }}",
-    "hideEventButtonTitle": "Hide from the agenda"
+    "hideEventButtonTitle": "Hide from the agenda",
+    "hideEventHint": "Hides this lecture from your agenda"
   },
   "libraryScreen": {
     "title": "Library"
@@ -934,7 +961,12 @@
     "emptyState": "No course available",
     "master": "Master degree",
     "section": "section",
-    "title": "Offering"
+    "title": "Offering",
+    "groupLabel": "{{name}}, {{count}} courses",
+    "expandCollapseHint": "Tap to expand or collapse the course group",
+    "tapToViewCourse": "Tap to view course details",
+    "coursesList": "{{count}} courses",
+    "yearSelectorHint": "Tap to change the academic year"
   },
   "personScreen": {
     "call": "Call",
@@ -944,7 +976,9 @@
     "moreInfo": "More information",
     "role": "Role",
     "sentEmail": "Send e-mail",
-    "totalCourses": "There are {{total}} courses"
+    "totalCourses": "There are {{total}} courses",
+    "callHint": "Opens phone dialer",
+    "emailHint": "Opens mail app"
   },
   "placeCategories": {
     "classrooms": "Classrooms",
@@ -1053,12 +1087,17 @@
     "ssoButton": "Sign in with Single-Sign-On",
     "ssoLink": "or sign in with your credentials"
   },
+  "staffScreen": {
+    "staffList": "Staff list, {{count}} members"
+  },
   "surveysScreen": {
     "compiledEmptyState": "There are no compiled surveys",
     "compiledTitle": "Compiled surveys",
     "title": "Surveys",
     "toBeCompiledEmptyState": "There are no surveys to be compiled",
-    "toBeCompiledTitle": "Surveys to be compiled"
+    "toBeCompiledTitle": "Surveys to be compiled",
+    "tapToOpenSurvey": "Double tap to open the survey",
+    "surveysList": "Surveys list, {{count}} items"
   },
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
