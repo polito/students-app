@@ -64,10 +64,10 @@ export const CpdSurveysScreen = ({ route }: Props) => {
                 key={survey.id}
                 survey={survey}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(
+                accessibilityLabel={`${survey.title}, ${accessibilityListLabel(
                   index,
                   surveys.length,
-                )}
+                )}`}
               />
             ))}
           </OverviewList>

@@ -81,7 +81,11 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
               />
             </OverviewList>
             {state.isError && (
-              <Text style={styles.errorFeedback}>
+              <Text
+                style={styles.errorFeedback}
+                accessibilityLiveRegion="assertive"
+                accessibilityRole="alert"
+              >
                 {t('examRequestScreen.error')}
               </Text>
             )}

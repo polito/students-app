@@ -166,7 +166,15 @@ export const ExamListItem = ({
             </Row>
           ) : (
             <>
-              <Row gap={1}>
+              <Row
+                gap={1}
+                accessible={true}
+                accessibilityLabel={`${t('common.date')}, ${
+                  exam.examStartsAt
+                    ? formatReadableDate(exam.examStartsAt, true)
+                    : t('common.dateToBeDefined')
+                }`}
+              >
                 <Icon
                   icon={faCalendar}
                   style={{ paddingVertical: spacing[8] }}
@@ -179,7 +187,12 @@ export const ExamListItem = ({
                 </Text>
               </Row>
               {(exam.places?.length ?? 0) > 0 && (
-                <Row gap={1} flexShrink={1}>
+                <Row
+                  gap={1}
+                  flexShrink={1}
+                  accessible={true}
+                  accessibilityLabel={`${t('common.location')}, ${exam.places?.map(place => place.name).join(', ')}`}
+                >
                   <Icon
                     icon={faLocationDot}
                     style={{ paddingVertical: spacing[8] }}

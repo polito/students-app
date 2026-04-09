@@ -54,7 +54,11 @@ export const ExamRescheduleComponent = ({
         />
       </OverviewList>
       {firstState.isError && (
-        <Text style={styles.errorFeedback}>
+        <Text
+          style={styles.errorFeedback}
+          accessibilityLiveRegion="assertive"
+          accessibilityRole="alert"
+        >
           {t('examRescheduleScreen.error')}
         </Text>
       )}
@@ -81,7 +85,11 @@ export const ExamRescheduleComponent = ({
         />
       </OverviewList>
       {secondState.isError && (
-        <Text style={styles.errorFeedback}>
+        <Text
+          style={styles.errorFeedback}
+          accessibilityLiveRegion="assertive"
+          accessibilityRole="alert"
+        >
           {t('examRescheduleScreen.error')}
         </Text>
       )}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { View, ViewProps } from 'react-native';
 import { ProgressChart as RNCKProgressChart } from 'react-native-chart-kit';
 
@@ -30,11 +31,20 @@ export const ProgressChart = ({
 }: Props) => {
   const { dark, colors: themeColors, palettes, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
+  const { t } = useTranslation();
 
   // Create accessibility label and value for the chart
   const accessibilityLabel = label
     ? label.replace('\n', ' ')
-    : 'Progress chart';
+    : t('common.progressChart');
+
+  const finalAccessibilityLabel =
+    data.length > 1
+      ? t('common.progressChartMulti', {
+          first: data[0],
+          last: data.at(-1),
+        })
+      : accessibilityLabel;
 
   const accessibilityValue =
     data.length > 0
@@ -49,37 +59,15 @@ export const ProgressChart = ({
     <View
       accessible={true}
       accessibilityRole="progressbar"
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={finalAccessibilityLabel}
       accessibilityValue={accessibilityValue}
       focusable={true}
       {...rest}
     >
-      <RNCKProgressChart
-        data={{
-          data: [1],
-        }}
-        width={boxSize}
-        height={boxSize}
-        hideLegend={true}
-        strokeWidth={thickness}
-        radius={radius}
-        style={{
-          margin: -20,
-        }}
-        chartConfig={{
-          backgroundGradientFromOpacity: 0,
-          backgroundGradientToOpacity: 0,
-          color: () =>
-            color(palettes.primary[500])
-              .alpha(dark ? 0.3 : 0.08)
-              .toString(),
-        }}
-      />
-      {data.map((i, index) => (
+      <View importantForAccessibility="no-hide-descendants">
         <RNCKProgressChart
-          key={`progress-${i}-${index}`}
           data={{
-            data: [i],
+            data: [1],
           }}
           width={boxSize}
           height={boxSize}
@@ -88,15 +76,44 @@ export const ProgressChart = ({
           radius={radius}
           style={{
             margin: -20,
-            position: 'absolute',
           }}
           chartConfig={{
             backgroundGradientFromOpacity: 0,
             backgroundGradientToOpacity: 0,
-            color: (opacity = 1) =>
-              color(colors[index]).alpha(Math.round(opacity)).toString(),
+            color: () =>
+              color(palettes.primary[500])
+                .alpha(dark ? 0.3 : 0.08)
+                .toString(),
           }}
         />
+      </View>
+      {data.map((i, index) => (
+        <View
+          key={`progress-wrapper-${i}-${index}`}
+          importantForAccessibility="no-hide-descendants"
+        >
+          <RNCKProgressChart
+            key={`progress-${i}-${index}`}
+            data={{
+              data: [i],
+            }}
+            width={boxSize}
+            height={boxSize}
+            hideLegend={true}
+            strokeWidth={thickness}
+            radius={radius}
+            style={{
+              margin: -20,
+              position: 'absolute',
+            }}
+            chartConfig={{
+              backgroundGradientFromOpacity: 0,
+              backgroundGradientToOpacity: 0,
+              color: (opacity = 1) =>
+                color(colors[index]).alpha(Math.round(opacity)).toString(),
+            }}
+          />
+        </View>
       ))}
       {label && (
         <Col

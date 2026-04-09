@@ -43,7 +43,9 @@ export const ModalContent = ({
         style={styles.header}
       >
         <View style={styles.headerLeft} />
-        <Text style={styles.modalTitle}>{title}</Text>
+        <Text style={styles.modalTitle} accessibilityRole="header">
+          {title}
+        </Text>
         <IconButton
           accessibilityLabel={t('common.close')}
           accessibilityRole="button"

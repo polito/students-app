@@ -49,6 +49,10 @@ export const SurveyListScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[surveysQuery]} manual />}
+      accessibilityRole="list"
+      accessibilityLabel={t('surveysScreen.surveysList', {
+        count: compiledSurveys.length,
+      })}
       data={compiledSurveys}
       renderItem={({ item }) => <SurveyListItem survey={item} key={item.id} />}
       ItemSeparatorComponent={Platform.select({
@@ -56,7 +60,13 @@ export const SurveyListScreen = ({ route }: Props) => {
       })}
       ListFooterComponent={<BottomBarSpacer />}
       ListEmptyComponent={
-        <OverviewList emptyStateText={t('surveysScreen.compiledEmptyState')} />
+        <OverviewList
+          emptyStateText={
+            isCompiled
+              ? t('surveysScreen.compiledEmptyState')
+              : t('surveysScreen.toBeCompiledEmptyState')
+          }
+        />
       }
     />
   );

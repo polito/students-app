@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Survey } from '@polito/student-api-client';
 
@@ -9,8 +11,12 @@ type Props = {
 
 export const SurveyListItem = ({ survey, ...props }: Props) => {
   const openInAppLink = useOpenInAppLink();
+  const { t } = useTranslation();
   return (
     <ListItem
+      accessibilityRole="button"
+      accessibilityLabel={survey.title}
+      accessibilityHint={t('surveysScreen.tapToOpenSurvey')}
       {...props}
       title={survey.title}
       subtitle={survey.subtitle ?? undefined}

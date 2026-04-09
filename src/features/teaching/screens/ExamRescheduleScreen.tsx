@@ -118,6 +118,7 @@ export const ExamRescheduleScreen = ({ navigation, route }: Props) => {
           loading={isBooking}
           disabled={!isCheck}
           absolute={false}
+          accessibilityHint={t('examRescheduleScreen.ctaDisabledHint')}
         />
       </View>
     </>

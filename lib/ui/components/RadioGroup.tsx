@@ -25,41 +25,40 @@ export const RadioGroup = <T,>({
   const { t } = useTranslation();
 
   return (
-    <Col
-      accessible={true}
-      accessibilityLabel={
-        showError && value === undefined
-          ? t('common.selectAnOption')
-          : undefined
-      }
-    >
-      {options.map((radioDefinition, index) => {
-        const isSelected = radioDefinition.value === value;
+    <Col>
+      <View accessibilityRole="radiogroup">
+        {options.map((radioDefinition, index) => {
+          const isSelected = radioDefinition.value === value;
 
-        return (
-          <ListItem
-            key={index}
-            onPress={() => setValue(radioDefinition.value)}
-            titleStyle={styles.radioText}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: isSelected }}
-            leadingItem={
-              <View
-                style={[
-                  styles.radio,
-                  isSelected && styles.radioSelected,
-                  showError && value === undefined && styles.radioError,
-                ]}
-              >
-                {isSelected && <View style={styles.radioSelectedInner} />}
-              </View>
-            }
-            title={radioDefinition.label}
-          />
-        );
-      })}
+          return (
+            <ListItem
+              key={index}
+              onPress={() => setValue(radioDefinition.value)}
+              titleStyle={styles.radioText}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: isSelected }}
+              leadingItem={
+                <View
+                  style={[
+                    styles.radio,
+                    isSelected && styles.radioSelected,
+                    showError && value === undefined && styles.radioError,
+                  ]}
+                >
+                  {isSelected && <View style={styles.radioSelectedInner} />}
+                </View>
+              }
+              title={radioDefinition.label}
+            />
+          );
+        })}
+      </View>
       {showError && value === undefined && (
-        <Text style={styles.groupErrorFeedback}>
+        <Text
+          style={styles.groupErrorFeedback}
+          accessibilityLiveRegion="assertive"
+          accessibilityRole="alert"
+        >
           {t('common.selectAnOption')}
         </Text>
       )}

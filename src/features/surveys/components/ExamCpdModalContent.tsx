@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -29,11 +29,16 @@ export const ExamCpdModalContent = ({ surveys, close }: Props) => {
     <ModalContent title={t('examCpdModalContent.title')} close={close}>
       <Col pt={4} pb={8} ph={4} gap={2}>
         <Col align="center" gap={4}>
-          <Icon
-            icon={faWarning}
-            color={styles.icon.color}
-            size={fontSizes['5xl']}
-          />
+          <View
+            importantForAccessibility="no"
+            accessibilityElementsHidden={true}
+          >
+            <Icon
+              icon={faWarning}
+              color={styles.icon.color}
+              size={fontSizes['5xl']}
+            />
+          </View>
           <Text variant="prose" style={styles.message}>
             {t('examCpdModalContent.message')}
           </Text>

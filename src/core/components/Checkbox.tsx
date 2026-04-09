@@ -45,6 +45,7 @@ export const Checkbox = ({
         accessibilityRole="checkbox"
         accessibilityState={{ checked: isChecked, disabled: disable ?? false }}
         accessibilityLabel={text}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         style={[
           styles.checkbox,
           checkboxStyle,

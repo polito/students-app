@@ -4,6 +4,8 @@ import Modal from 'react-native-modal';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 
+import { IS_ANDROID } from '../constants';
+
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
@@ -62,7 +64,9 @@ export const BottomModal = ({
       scrollOffset={scrollOffset}
       scrollOffsetMax={100}
     >
-      <View>{children}</View>
+      <View accessibilityViewIsModal={IS_ANDROID ? true : undefined}>
+        {children}
+      </View>
     </Modal>
   );
 };
