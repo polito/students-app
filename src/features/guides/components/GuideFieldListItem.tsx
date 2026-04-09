@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Text } from '@lib/ui/components/Text';
@@ -17,7 +17,7 @@ export const GuideFieldListItem = ({ field }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
-  const copyToClipboard = () => {
+  const handleCopy = () => {
     if (!field.isCopyEnabled) return;
     Clipboard.setString(field.value);
     setFeedback({
@@ -28,36 +28,18 @@ export const GuideFieldListItem = ({ field }: Props) => {
   return (
     <ListItem
       accessible={true}
-      accessibilityRole="text"
-      accessibilityLabel={[
-        field.label,
-        ' - ',
-        field.value,
-        field.isCopyEnabled ? `, ${t('guideFieldListItem.tapToCopy')}` : '',
-      ].join('')}
+      accessibilityRole={field.isCopyEnabled ? 'button' : 'text'}
+      accessibilityLabel={[field.label, ' - ', field.value].join('')}
+      accessibilityHint={
+        field.isCopyEnabled ? t('guideFieldListItem.tapToCopy') : undefined
+      }
+      onPress={field.isCopyEnabled ? handleCopy : undefined}
       title={
         <View style={styles.row}>
           <Text style={[styles.text, styles.label]}>{field.label}</Text>
-          <TouchableOpacity
-            activeOpacity={field.isCopyEnabled ? 0.2 : 1}
-            onPress={copyToClipboard}
-            accessible={field.isCopyEnabled}
-            accessibilityRole={field.isCopyEnabled ? 'button' : undefined}
-            accessibilityLabel={
-              field.isCopyEnabled
-                ? `${t('guideFieldListItem.copyValue')} ${field.value}`
-                : undefined
-            }
-            accessibilityHint={
-              field.isCopyEnabled
-                ? t('guideFieldListItem.copyToClipboard')
-                : undefined
-            }
-          >
-            <Text weight="semibold" style={styles.text}>
-              {field.value}
-            </Text>
-          </TouchableOpacity>
+          <Text weight="semibold" style={styles.text}>
+            {field.value}
+          </Text>
         </View>
       }
     />

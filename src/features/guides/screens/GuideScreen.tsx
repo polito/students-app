@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -46,6 +46,10 @@ export const GuideScreen = ({ navigation, route }: Props) => {
     });
   }, [guide, navigation, emailGuideRead, updatePreference]);
 
+  const fieldsLabel = query.isLoading
+    ? t('guideScreen.fieldsLoading')
+    : `${t('guideScreen.guideFields')} - ${guide?.fields?.length ?? 0} ${t('guideScreen.fieldsAvailable')}`;
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -60,29 +64,18 @@ export const GuideScreen = ({ navigation, route }: Props) => {
             padded
             style={styles.card}
             accessible={true}
-            accessibilityRole="text"
-            accessibilityLabel={`${t('guideScreen.introduction')}: ${guide?.intro}`}
+            accessibilityLabel={`${t('guideScreen.introduction')}: ${guide?.intro ?? ''}`}
           >
             <Text>{guide?.intro}</Text>
           </Card>
-          <OverviewList
-            indented
-            loading={query.isLoading}
-            accessible={true}
-            accessibilityRole="list"
-            accessibilityLabel={`${t('guideScreen.guideFields')} - ${guide?.fields.length || 0} ${t('guideScreen.fieldsAvailable')}`}
-          >
-            {guide?.fields.map(field => {
-              return <GuideFieldListItem field={field} key={field.label} />;
-            })}
-          </OverviewList>
-          <Card
-            padded
-            style={styles.card}
-            accessible={true}
-            accessibilityRole="text"
-            accessibilityLabel={`${t('guideScreen.guideSections')} - ${guide?.sections.length || 0} ${t('guideScreen.sectionsAvailable')}`}
-          >
+          <View accessibilityRole="list" accessibilityLabel={fieldsLabel}>
+            <OverviewList indented loading={query.isLoading}>
+              {guide?.fields.map(field => {
+                return <GuideFieldListItem field={field} key={field.label} />;
+              })}
+            </OverviewList>
+          </View>
+          <Card padded style={styles.card}>
             {guide?.sections.map(section => {
               return (
                 <GuideSectionListItem section={section} key={section.title} />

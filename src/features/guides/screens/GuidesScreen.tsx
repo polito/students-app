@@ -1,5 +1,11 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from 'react-native';
 
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -28,52 +34,59 @@ export const GuidesScreen = (_props: Props) => {
     if (emailGuideRead) return false;
     return true;
   };
+
+  useEffect(() => {
+    if (!guidesQuery.isLoading && guidesQuery.data) {
+      AccessibilityInfo.announceForAccessibility(
+        t('guidesScreen.listLoaded', { count: guidesQuery.data.length }),
+      );
+    }
+  }, [guidesQuery.isLoading, guidesQuery.data, t]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      accessibilityRole="list"
-      accessibilityLabel={t('guidesScreen.total', {
-        total: guidesQuery.data?.length ?? 0,
-      })}
       refreshControl={<RefreshControl queries={[guidesQuery]} manual />}
     >
       <SafeAreaView>
         <Section>
-          <OverviewList
-            emptyStateText={
-              guidesQuery.data && guidesQuery.data.length === 0
-                ? t('common.cacheMiss')
-                : undefined
-            }
-            indented
-            loading={guidesQuery.isLoading}
-            accessible={true}
+          <View
             accessibilityRole="list"
             accessibilityLabel={t('guidesScreen.guidesList')}
           >
-            {guidesQuery.data?.map((guide, index) => (
-              <ListItem
-                accessibilityRole="button"
-                key={guide.id}
-                title={guide.listTitle}
-                unread={isUnread(guide.id)}
-                accessible={true}
-                accessibilityLabel={[
-                  accessibilityListLabel(index, guidesQuery.data.length),
-                  ' - ',
-                  guide.listTitle,
-                  isUnread(guide.id)
-                    ? `, ${t('guidesScreen.unreadGuide')}`
-                    : '',
-                ].join('')}
-                accessibilityHint={t('guidesScreen.tapToOpenGuide')}
-                linkTo={{
-                  screen: 'Guide',
-                  params: { id: guide.id },
-                }}
-              />
-            ))}
-          </OverviewList>
+            <OverviewList
+              emptyStateText={
+                guidesQuery.data && guidesQuery.data.length === 0
+                  ? t('common.cacheMiss')
+                  : undefined
+              }
+              indented
+              loading={guidesQuery.isLoading}
+            >
+              {guidesQuery.data?.map((guide, index) => (
+                <ListItem
+                  accessibilityRole="button"
+                  key={guide.id}
+                  title={guide.listTitle}
+                  unread={isUnread(guide.id)}
+                  accessible={true}
+                  accessibilityLabel={[
+                    accessibilityListLabel(index, guidesQuery.data.length),
+                    ' - ',
+                    guide.listTitle,
+                    isUnread(guide.id)
+                      ? `, ${t('guidesScreen.unreadGuide')}`
+                      : '',
+                  ].join('')}
+                  accessibilityHint={t('guidesScreen.tapToOpenGuide')}
+                  linkTo={{
+                    screen: 'Guide',
+                    params: { id: guide.id },
+                  }}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>
