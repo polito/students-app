@@ -15,6 +15,8 @@ import { PersonOverview } from '@polito/student-api-client';
 
 import { IS_ANDROID } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { PersonOverviewListItem } from './PersonOverviewListItem';
 
 type MenuProps = PropsWithChildren<{
@@ -56,87 +58,106 @@ export const RecentSearch = () => {
   const styles = useStylesheet(createStyles);
   const { dark, palettes, colors, fontSizes } = useTheme();
   const { t } = useTranslation();
+  const { accessibilityListLabel } = useAccessibility();
+  const isDisabled = useOfflineDisabled();
 
   const infoColor = dark ? palettes.info[400] : palettes.info[700];
+  const listLabel = `${t('contactsScreen.recentSearches')} - ${peopleSearched.length} ${t('contactsScreen.contactsFound')}`;
 
   return (
-    <FlatList
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-      accessible={true}
-      accessibilityRole="list"
-      accessibilityLabel={`${t('contactsScreen.recentSearches')} - ${peopleSearched.length} ${t('contactsScreen.contactsFound')}`}
-      ListHeaderComponent={
-        <Row align="center" justify="space-between" style={styles.header}>
-          <Text
-            style={[styles.heading, { color: infoColor }]}
-            variant="heading"
-            accessibilityRole="header"
-          >
-            {t('contactsScreen.recentSearches')}
-          </Text>
-          <IconButton
-            onPress={() => updatePreference('peopleSearched', [])}
-            style={styles.cancelIcon}
-            icon={faTimes}
-            accessibilityRole="button"
-            accessibilityLabel={t('contactsScreen.clearSearches')}
-            accessibilityHint={t('contactsScreen.clearSearchesHint')}
-            color={infoColor}
-          />
-        </Row>
-      }
-      data={peopleSearched}
-      ItemSeparatorComponent={Platform.select({
-        ios: () => <IndentedDivider indent={20} />,
-      })}
-      renderItem={({ item: person, index }) => {
-        const isFirstItem = index === 0;
-        const isLastItem = index === peopleSearched.length - 1;
-        return IS_ANDROID ? (
-          <PersonOverviewListItem
-            totalData={peopleSearched.length}
-            index={index}
-            key={person.id}
-            person={person}
-            trailingItem={
+    <View accessibilityRole="list" accessibilityLabel={listLabel}>
+      <FlatList
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={
+          <Row align="center" justify="space-between" style={styles.header}>
+            <Text
+              style={[styles.heading, { color: infoColor }]}
+              variant="heading"
+              accessibilityRole="header"
+            >
+              {t('contactsScreen.recentSearches')}
+            </Text>
+            <IconButton
+              onPress={() => updatePreference('peopleSearched', [])}
+              style={styles.cancelIcon}
+              icon={faTimes}
+              accessibilityRole="button"
+              accessibilityLabel={t('contactsScreen.clearSearches')}
+              accessibilityHint={t('contactsScreen.clearSearchesHint')}
+              color={infoColor}
+            />
+          </Row>
+        }
+        data={peopleSearched}
+        ItemSeparatorComponent={Platform.select({
+          ios: () => <IndentedDivider indent={20} />,
+        })}
+        renderItem={({ item: person, index }) => {
+          const isFirstItem = index === 0;
+          const isLastItem = index === peopleSearched.length - 1;
+          return IS_ANDROID ? (
+            <PersonOverviewListItem
+              totalData={peopleSearched.length}
+              index={index}
+              key={person.id}
+              person={person}
+              trailingItem={
+                <Menu person={person}>
+                  <IconButton
+                    adjustSpacing="right"
+                    icon={faEllipsisVertical}
+                    color={colors.secondaryText}
+                    size={fontSizes.md}
+                    accessibilityLabel={t('contactsScreen.moreOptions')}
+                    accessibilityHint={t('contactsScreen.moreOptionsHint')}
+                  />
+                </Menu>
+              }
+              containerStyle={[
+                isFirstItem && styles.firstItem,
+                isLastItem && styles.lastItem,
+              ]}
+            />
+          ) : (
+            <View
+              key={person.id}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel={`${accessibilityListLabel(index, peopleSearched.length)}${person.firstName} ${person.lastName}, ${person.role || ''}`}
+              accessibilityHint={t('common.tapToNavigate')}
+              accessibilityState={{ disabled: isDisabled }}
+              accessibilityActions={[
+                {
+                  name: 'delete',
+                  label: t('contactsScreen.removeFromRecent'),
+                },
+              ]}
+              onAccessibilityAction={event => {
+                if (event.nativeEvent.actionName === 'delete') {
+                  const newPeopleSearched = peopleSearched.filter(
+                    p => p.id !== person.id,
+                  );
+                  updatePreference('peopleSearched', newPeopleSearched);
+                }
+              }}
+            >
               <Menu person={person}>
-                <IconButton
-                  adjustSpacing="right"
-                  icon={faEllipsisVertical}
-                  color={colors.secondaryText}
-                  size={fontSizes.md}
+                <PersonOverviewListItem
+                  totalData={peopleSearched.length}
+                  index={index}
+                  person={person}
+                  containerStyle={[
+                    isFirstItem && styles.firstItem,
+                    isLastItem && styles.lastItem,
+                  ]}
                 />
               </Menu>
-            }
-            containerStyle={[
-              isFirstItem && styles.firstItem,
-              isLastItem && styles.lastItem,
-            ]}
-          />
-        ) : (
-          <View
-            key={person.id}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel={`${person.firstName} ${person.lastName}, ${person.role || ''}`}
-            accessibilityHint={t('contactsScreen.cancelRecentSearchText')}
-          >
-            <Menu person={person}>
-              <PersonOverviewListItem
-                totalData={peopleSearched.length}
-                index={index}
-                person={person}
-                containerStyle={[
-                  isFirstItem && styles.firstItem,
-                  isLastItem && styles.lastItem,
-                ]}
-              />
-            </Menu>
-          </View>
-        );
-      }}
-    />
+            </View>
+          );
+        }}
+      />
+    </View>
   );
 };
 

@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  View,
 } from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -40,13 +41,12 @@ export const ContactsScreen = () => {
   useEffect(() => {
     if (people && people.length > 0) {
       AccessibilityInfo.announceForAccessibility(
-        [
-          t('contactsScreen.resultFound'),
-          ', ',
-          people.length,
-          ', ',
-          t('contactsScreen.resultFoundRes'),
-        ].join(', '),
+        `${t('contactsScreen.resultFound')} ${people.length} ${t('contactsScreen.resultFoundRes')}`,
+      );
+    }
+    if (people && people.length === 0) {
+      AccessibilityInfo.announceForAccessibility(
+        t('contactsScreen.noResultsFound'),
       );
     }
   }, [people, t]);
@@ -69,6 +69,7 @@ export const ContactsScreen = () => {
             onClearLabel={t('contactsScreen.clearSearch')}
             accessibilityLabel={t('contactsScreen.searchPlaceholder')}
             accessibilityHint={t('contactsScreen.searchHint')}
+            accessibilityState={{ disabled: isInputDisabled }}
           />
         </Row>
       </HeaderAccessory>
@@ -81,24 +82,26 @@ export const ContactsScreen = () => {
         >
           <SafeAreaView>
             <Section>
-              <OverviewList
-                loading={isLoading}
-                style={{ marginTop: spacing[4] }}
-                emptyStateText={t('contactsScreen.emptyState')}
-                accessible={true}
+              <View
                 accessibilityRole="list"
                 accessibilityLabel={`${t('contactsScreen.searchResults')} - ${people?.length || 0} ${t('contactsScreen.contactsFound')}`}
               >
-                {people?.map((person, index) => (
-                  <PersonOverviewListItem
-                    key={person.id}
-                    person={person}
-                    searchString={debounceSearch}
-                    index={index}
-                    totalData={people?.length || 0}
-                  />
-                ))}
-              </OverviewList>
+                <OverviewList
+                  loading={isLoading}
+                  style={{ marginTop: spacing[4] }}
+                  emptyStateText={t('contactsScreen.emptyState')}
+                >
+                  {people?.map((person, index) => (
+                    <PersonOverviewListItem
+                      key={person.id}
+                      person={person}
+                      searchString={debounceSearch}
+                      index={index}
+                      totalData={people?.length || 0}
+                    />
+                  ))}
+                </OverviewList>
+              </View>
             </Section>
           </SafeAreaView>
         </ScrollView>

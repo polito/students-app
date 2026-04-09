@@ -49,7 +49,6 @@ export const PersonOverviewListItem = ({
   const { accessibilityListLabel } = useAccessibility();
   const { t } = useTranslation();
   const { updatePreference, peopleSearched } = usePreferencesContext();
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const subtitle = person.role ?? '';
   const firstName = person?.firstName ?? '';
   const lastName = person?.lastName ?? '';
@@ -85,17 +84,23 @@ export const PersonOverviewListItem = ({
           <Image
             source={{ uri: person.picture }}
             style={styles.picture}
-            accessible={true}
-            accessibilityLabel={`${t('common.profilePicture')} ${title}`}
+            accessible={false}
           />
         ) : (
-          <Icon icon={faUser} size={fontSizes.xl} />
+          <Icon icon={faUser} size={fontSizes.xl} accessible={false} />
         )
       }
       title={<HighlightedText text={title} highlight={searchString || ''} />}
-      accessibilityLabel={[accessibilityLabel, title, subtitle].join(', ')}
+      accessibilityLabel={[
+        title,
+        subtitle,
+        accessibilityListLabel(index, totalData),
+      ]
+        .filter(Boolean)
+        .join(', ')}
       accessibilityRole="button"
       accessibilityHint={t('common.tapToViewContact')}
+      accessibilityState={{ disabled: isDisabled }}
       subtitle={subtitle}
       trailingItem={trailingItem}
       style={[

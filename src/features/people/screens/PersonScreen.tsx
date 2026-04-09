@@ -90,6 +90,7 @@ export const PersonScreen = ({ route }: Props) => {
           <View
             accessible={true}
             accessibilityLabel={profileImageAccessibleLabel}
+            importantForAccessibility="no-hide-descendants"
           >
             {person?.picture ? (
               <Image
@@ -113,6 +114,7 @@ export const PersonScreen = ({ route }: Props) => {
                 value={person.role}
                 style={styles.spaceBottom}
                 accessible={true}
+                accessibilityLabel={`${t('personScreen.role')}: ${person.role}`}
               />
             )}
             {person?.facilityShortName && (
@@ -121,6 +123,7 @@ export const PersonScreen = ({ route }: Props) => {
                 value={person.facilityShortName}
                 style={styles.spaceBottom}
                 accessible={true}
+                accessibilityLabel={`${t('personScreen.department')}: ${person.facilityShortName}`}
               />
             )}
 
@@ -132,7 +135,10 @@ export const PersonScreen = ({ route }: Props) => {
                 accessibilityLabel={t('personScreen.moreInfo')}
                 accessibilityHint={t('common.externalLink')}
               >
-                <Row align="center">
+                <Row
+                  align="center"
+                  importantForAccessibility="no-hide-descendants"
+                >
                   <Icon
                     icon={faLink}
                     size={20}
@@ -166,7 +172,8 @@ export const PersonScreen = ({ route }: Props) => {
           index,
           phoneNumbers?.length || 0,
         )}. ${t('personScreen.call')} ${phoneLabel}`}
-        accessibilityHint={t('personScreen.call')}
+        accessibilityHint={t('personScreen.callHint')}
+        accessibilityState={{ disabled: isOffline }}
         onPress={() => Linking.openURL(`tel:${phoneNumber.full}`)}
       />
     );
@@ -222,25 +229,25 @@ export const PersonScreen = ({ route }: Props) => {
                   : ''
               }${t('common.email')}`}
             />
-            <OverviewList
-              indented
-              loading={personQuery.isLoading}
-              accessible={true}
-              accessibilityRole="list"
-            >
-              {phoneNumbers?.map(renderPhoneNumber)}
-              <ListItem
-                accessible={true}
-                accessibilityRole="button"
-                isAction
-                leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-                title={t('common.email')}
-                subtitle={person?.email}
-                accessibilityLabel={`${t('personScreen.sentEmail')} ${person?.email}`}
-                accessibilityHint={t('personScreen.sentEmail')}
-                onPress={() => Linking.openURL(`mailto:${person?.email}`)}
-              />
-            </OverviewList>
+            <View accessibilityRole="list">
+              <OverviewList indented loading={personQuery.isLoading}>
+                {phoneNumbers?.map(renderPhoneNumber)}
+                {person?.email && (
+                  <ListItem
+                    accessible={true}
+                    accessibilityRole="button"
+                    isAction
+                    leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+                    title={t('common.email')}
+                    subtitle={person.email}
+                    accessibilityLabel={`${t('personScreen.sentEmail')} ${person.email}`}
+                    accessibilityHint={t('personScreen.emailHint')}
+                    accessibilityState={{ disabled: isOffline }}
+                    onPress={() => Linking.openURL(`mailto:${person.email}`)}
+                  />
+                )}
+              </OverviewList>
+            </View>
           </Section>
           {courses.length > 0 && (
             <Section>
@@ -252,16 +259,18 @@ export const PersonScreen = ({ route }: Props) => {
                   { total: courses.length },
                 )}`}
               />
-              <OverviewList accessible={true} accessibilityRole="list">
-                {courses.map((course, index) => (
-                  <RenderedCourse
-                    key={course.id}
-                    course={course}
-                    index={index}
-                    disabled={isOffline}
-                  />
-                ))}
-              </OverviewList>
+              <View accessibilityRole="list">
+                <OverviewList>
+                  {courses.map((course, index) => (
+                    <RenderedCourse
+                      key={course.id}
+                      course={course}
+                      index={index}
+                      disabled={isOffline}
+                    />
+                  ))}
+                </OverviewList>
+              </View>
             </Section>
           )}
         </Col>
