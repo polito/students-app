@@ -86,55 +86,68 @@ export const JobOfferScreen = ({ route }: Props) => {
         <Section>
           <ScreenTitle title={title ?? ''} style={styles.heading} />
         </Section>
-        <Card
-          accessible
-          padded
-          accessibilityRole="text"
-          accessibilityLabel={`${t('jobOfferScreen.companyName')}: ${companyName}`}
-        >
+        <Card padded>
           <Text
             variant="heading"
             weight="bold"
             numberOfLines={1}
-            accessible={true}
             accessibilityRole="header"
           >
             {companyName}
           </Text>
         </Card>
-        <Card
-          accessible
-          padded
-          gapped
-          accessibilityRole="text"
-          accessibilityLabel={`${t('jobOfferScreen.jobDetails')}`}
-        >
+        <Card padded gapped>
           {!!contractType && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityRole="text"
+              accessibilityLabel={`${t('jobOfferScreen.contractType')}: ${contractType}`}
+            >
               {t('jobOfferScreen.contractType')}
               <Text>{contractType}</Text>
             </Text>
           )}
           {!!salary && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityRole="text"
+              accessibilityLabel={`${t('jobOfferScreen.salary')}: ${salary}`}
+            >
               {t('jobOfferScreen.salary')}
               <Text variant="longProse">{salary}</Text>
             </Text>
           )}
           {!!location && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityRole="text"
+              accessibilityLabel={`${t('jobOfferScreen.location')}: ${location}`}
+            >
               {t('jobOfferScreen.location')}
               <Text>{location}</Text>
             </Text>
           )}
           {!!endsAtDate && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityRole="text"
+              accessibilityLabel={`${t('jobOfferScreen.endsAtDate')}: ${formatDate(endsAtDate)}`}
+            >
               {t('jobOfferScreen.endsAtDate')}
               <Text>{formatDate(endsAtDate)}</Text>
             </Text>
           )}
           {!!freePositions && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityRole="text"
+              accessibilityLabel={`${t('jobOfferScreen.freePositions')}: ${freePositions}`}
+            >
               {t('jobOfferScreen.freePositions')}
               <Text>{freePositions}</Text>
             </Text>
@@ -165,35 +178,35 @@ export const JobOfferScreen = ({ route }: Props) => {
           </Col>
           <>
             {(contactInfo[0] || email || url) && (
-              <Text variant="subHeading">
+              <Text variant="subHeading" accessibilityRole="header">
                 {t('jobOfferScreen.application')}
               </Text>
             )}
             {!!url && (
-              <Text
-                numberOfLines={1}
-                accessibilityRole="link"
-                accessibilityLabel={`${t('jobOfferScreen.url')}: ${url}`}
-                accessibilityHint={t('common.externalLink')}
-                weight="semibold"
-              >
+              <Text numberOfLines={1} weight="semibold">
                 {t('jobOfferScreen.url')}
-                <Text variant="link" onPress={() => onPressUrl(url)}>
+                <Text
+                  variant="link"
+                  accessibilityRole="link"
+                  accessibilityLabel={`${t('jobOfferScreen.url')}: ${url}`}
+                  accessibilityHint={t('common.externalLink')}
+                  onPress={() => onPressUrl(url)}
+                >
                   {url}
                 </Text>
               </Text>
             )}
             {!!contactInfo && <Text>{contactInfo}</Text>}
             {!!email && (
-              <Text
-                weight="semibold"
-                accessible={true}
-                accessibilityRole="link"
-                accessibilityLabel={`${t('jobOfferScreen.email')}: ${email}`}
-                accessibilityHint={t('jobOfferScreen.sendEmail')}
-              >
+              <Text weight="semibold">
                 {t('jobOfferScreen.email')}
-                <Text variant="link" onPress={() => onPressEmail(email)}>
+                <Text
+                  variant="link"
+                  accessibilityRole="link"
+                  accessibilityLabel={`${t('jobOfferScreen.email')}: ${email}`}
+                  accessibilityHint={t('jobOfferScreen.sendEmail')}
+                  onPress={() => onPressEmail(email)}
+                >
                   {email}
                 </Text>
               </Text>

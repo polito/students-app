@@ -1,5 +1,11 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -13,6 +19,16 @@ export const JobOffersScreen = () => {
   const { t } = useTranslation();
   const jobOffersQuery = useGetJobOffers();
 
+  const listLabel = `${t('jobOffersScreen.jobOffersList')} - ${jobOffersQuery.data?.length || 0} ${t('jobOffersScreen.jobOffersAvailable')}`;
+
+  useEffect(() => {
+    if (!jobOffersQuery.isLoading && jobOffersQuery.data) {
+      AccessibilityInfo.announceForAccessibility(
+        t('jobOffersScreen.listLoaded', { count: jobOffersQuery.data.length }),
+      );
+    }
+  }, [jobOffersQuery.isLoading]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -20,22 +36,21 @@ export const JobOffersScreen = () => {
     >
       <SafeAreaView>
         <Section>
-          <OverviewList
-            loading={jobOffersQuery.isLoading}
-            accessible={true}
-            accessibilityRole="list"
-            accessibilityLabel={`${t('jobOffersScreen.jobOffersList')} - ${jobOffersQuery.data?.length || 0} ${t('jobOffersScreen.jobOffersAvailable')}`}
-            emptyStateText={t('jobOffersScreen.emptyState')}
-          >
-            {jobOffersQuery?.data?.map((jobOffer, index) => (
-              <JobOfferListItem
-                jobOffer={jobOffer}
-                key={jobOffer.id}
-                index={index}
-                totalData={jobOffersQuery.data?.length || 0}
-              />
-            ))}
-          </OverviewList>
+          <View accessibilityRole="list" accessibilityLabel={listLabel}>
+            <OverviewList
+              loading={jobOffersQuery.isLoading}
+              emptyStateText={t('jobOffersScreen.emptyState')}
+            >
+              {jobOffersQuery?.data?.map((jobOffer, index) => (
+                <JobOfferListItem
+                  jobOffer={jobOffer}
+                  key={jobOffer.id}
+                  index={index}
+                  totalData={jobOffersQuery.data?.length || 0}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>
