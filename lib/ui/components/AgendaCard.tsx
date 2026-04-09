@@ -105,7 +105,7 @@ export const AgendaCard = ({
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const isTablet = useMemo(() => isTabletHelper(), []);
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
@@ -158,6 +158,7 @@ export const AgendaCard = ({
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={t('common.tapToNavigate')}
+        accessibilityLanguage={i18n.language}
         accessibilityState={{ disabled: !onPress }}
         disabled={!onPress}
       >

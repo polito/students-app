@@ -28,6 +28,10 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '~/core/hooks/useAccessibilty.ts';
 import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled.ts';
 import { useSafeAreaSpacing } from '~/core/hooks/useSafeAreaSpacing.ts';
 import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
@@ -73,6 +77,8 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   ]);
 
   const { isLoading, data } = useGetAgendaWeeks(weeks);
+  useAnnounceLoading(isLoading);
+  const { getListAccessibilityProps } = useAccessibility();
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
 
@@ -292,6 +298,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         ))}
       {!!data.length && !agendaState.isRefreshing && (
         <FlatList
+          {...getListAccessibilityProps(t('agendaScreen.title'), data.length)}
           ref={flatListRef}
           data={data}
           initialNumToRender={1}

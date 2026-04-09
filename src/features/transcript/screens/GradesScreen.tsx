@@ -9,6 +9,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useGetGrades,
@@ -22,6 +23,7 @@ export const GradesScreen = () => {
   const styles = useStylesheet(createStyles);
   const gradesQuery = useGetGrades();
   const provisionalGradesQuery = useGetProvisionalGrades();
+  useAnnounceLoading(gradesQuery.isLoading || provisionalGradesQuery.isLoading);
 
   const isOffline = useOfflineDisabled();
 

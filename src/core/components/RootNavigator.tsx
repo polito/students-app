@@ -29,6 +29,7 @@ import { useApiContext } from '../contexts/ApiContext';
 import { useDownloadsContext } from '../contexts/DownloadsContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
+import { useAccessibility } from '../hooks/useAccessibilty';
 import { useModalManager } from '../hooks/useModalManager';
 import { useNotifications } from '../hooks/useNotifications';
 import { useGetSites } from '../queries/placesHooks';
@@ -55,6 +56,7 @@ export const RootNavigator = ({
   const { data: student } = useGetStudent();
   const { updatePreference, accessibility } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
+  const { getBadgeAccessibilityLabel } = useAccessibility();
   const hasSyncedFiles = useRef(false);
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
@@ -101,6 +103,11 @@ export const RootNavigator = ({
     config: { duration: 0 },
   };
 
+  const teachingBadge = getUnreadsCount(['teaching']);
+  const servicesBadge = getUnreadsCount(['services']);
+  const profileBadge =
+    filterUnread(profileMessages.data || []).length || undefined;
+
   const androidTabBarBottom = useMemo(
     () =>
       Platform.select({ android: { height: androidTabBarHeight + bottom } }),
@@ -138,7 +145,11 @@ export const RootNavigator = ({
             tabBarIcon: ({ color }) => (
               <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
             ),
-            tabBarBadge: getUnreadsCount(['teaching']),
+            tabBarBadge: teachingBadge,
+            tabBarAccessibilityLabel: getBadgeAccessibilityLabel(
+              teachingBadge ?? 0,
+              t('teachingScreen.title'),
+            ),
           }}
         />
         <TabNavigator.Screen
@@ -170,7 +181,11 @@ export const RootNavigator = ({
             tabBarIcon: ({ color }) => (
               <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
             ),
-            tabBarBadge: getUnreadsCount(['services']),
+            tabBarBadge: servicesBadge,
+            tabBarAccessibilityLabel: getBadgeAccessibilityLabel(
+              servicesBadge ?? 0,
+              t('common.services'),
+            ),
           }}
         />
         <TabNavigator.Screen
@@ -181,8 +196,11 @@ export const RootNavigator = ({
             tabBarIcon: ({ color }) => (
               <Icon icon={faUser} color={color} size={tabBarIconSize} />
             ),
-            tabBarBadge:
-              filterUnread(profileMessages.data || []).length || undefined,
+            tabBarBadge: profileBadge,
+            tabBarAccessibilityLabel: getBadgeAccessibilityLabel(
+              profileBadge ?? 0,
+              t('profileScreen.title'),
+            ),
           }}
         />
       </TabNavigator.Navigator>

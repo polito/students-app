@@ -33,6 +33,7 @@ import { DateTime } from 'luxon';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourses } from '../../../core/queries/courseHooks';
@@ -65,6 +66,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  useAnnounceLoading(
+    coursesQuery.isLoading || examsQuery.isLoading || studentQuery.isLoading,
+  );
 
   const transcriptBadge = null;
 

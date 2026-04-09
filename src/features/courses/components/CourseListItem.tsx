@@ -34,8 +34,8 @@ import { AGENDA_QUERY_PREFIX } from '~/features/agenda/queries/agendaHooks';
 import { LECTURES_QUERY_PREFIX } from '~/features/agenda/queries/lectureHooks';
 
 import { IS_ANDROID, courseColors } from '../../../core/constants';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
@@ -137,7 +137,7 @@ export const CourseListItem = ({
   total,
 }: Props) => {
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { accessibilityListLabel } = useAccessibility();
   const preferences = usePreferencesContext();
   // const isHidden = coursePrefs?.isHidden ?? false;
@@ -259,9 +259,7 @@ export const CourseListItem = ({
 
     // Build badge text if there are unread items
     const badgeText =
-      badgeCount > 0
-        ? `, ${t('common.newItems', { count: badgeCount })}`
-        : '';
+      badgeCount > 0 ? `, ${t('common.newItems', { count: badgeCount })}` : '';
 
     const baseText = `${course.name}, ${course.cfu} ${t(
       'common.credits',
@@ -347,6 +345,7 @@ export const CourseListItem = ({
       }}
       accessibilityLabel={accessibleText}
       accessibilityRole="button"
+      accessibilityLanguage={i18n.language}
       title={course.name}
       subtitle={subtitle}
       leadingItem={

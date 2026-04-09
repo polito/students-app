@@ -6,12 +6,14 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
 
 export const ExamsScreen = () => {
   const { t } = useTranslation();
   const examsQuery = useGetExams();
+  useAnnounceLoading(examsQuery.isLoading);
 
   return (
     <ScrollView

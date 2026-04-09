@@ -12,7 +12,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
@@ -29,7 +32,9 @@ export const CourseNoticesScreen = () => {
   const { spacing } = useTheme();
   const courseId = useCourseContext();
   const noticesQuery = useGetCourseNotices(courseId);
-  const { accessibilityListLabel } = useAccessibility();
+  useAnnounceLoading(noticesQuery.isLoading);
+  const { accessibilityListLabel, getListAccessibilityProps } =
+    useAccessibility();
   const { getUnreadsCount, clearNotificationScope } = useNotifications();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const isCacheMissing = useOfflineDisabled(
@@ -66,6 +71,10 @@ export const CourseNoticesScreen = () => {
 
   return (
     <FlatList
+      {...getListAccessibilityProps(
+        t('courseInfoTab.notices'),
+        notices?.length || 0,
+      )}
       contentInsetAdjustmentBehavior="automatic"
       initialNumToRender={15}
       style={GlobalStyles.grow}

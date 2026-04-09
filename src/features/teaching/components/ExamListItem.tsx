@@ -50,7 +50,7 @@ export const ExamListItem = ({
   bottomBorder = true,
   ...rest
 }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { accessibilityListLabel } = useAccessibility();
 
   const { courses: coursesPreferences, accessibility } =
@@ -109,6 +109,7 @@ export const ExamListItem = ({
         }}
         title={exam.courseName}
         accessibilityRole="button"
+        accessibilityLanguage={i18n.language}
         accessibilityHint={t('common.tapToNavigate')}
         focusable
         leadingItem={

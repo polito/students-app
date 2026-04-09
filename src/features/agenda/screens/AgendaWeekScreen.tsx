@@ -28,6 +28,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useAnnounceLoading } from '~/core/hooks/useAccessibilty.ts';
 import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled.ts';
 import { APP_TIMEZONE } from '~/utils/dates.ts';
 
@@ -87,6 +88,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     isFetching /* , fetchPreviousPage, fetchNextPage*/,
     refetch,
   } = useGetAgendaWeek(currentWeek);
+  useAnnounceLoading(isFetching);
 
   const calendarData = useMemo(() => {
     const res = weekData?.data?.flatMap(week => week.items) ?? [];

@@ -22,6 +22,7 @@ import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { IS_IOS } from '../../../core/constants';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
@@ -56,6 +57,17 @@ export const TicketListItem = ({
   const confirm = useConfirmationDialog({
     message: t('tickets.closeTip'),
   });
+  const { getBadgeAccessibilityLabel } = useAccessibility();
+
+  const ticketAccessibilityLabel = [
+    getHtmlTextContent(ticket?.subject),
+    `${formatDateTime(ticket.updatedAt)} - ${getHtmlTextContent(ticket?.message)}`,
+    ticket.unreadCount > 0
+      ? getBadgeAccessibilityLabel(ticket.unreadCount)
+      : undefined,
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
   const queryClient = useQueryClient();
@@ -83,7 +95,13 @@ export const TicketListItem = ({
 
   const UnReadCount = useCallback(
     () => (
-      <Col justify="center" align="center" style={styles.unreadCount}>
+      <Col
+        justify="center"
+        align="center"
+        style={styles.unreadCount}
+        importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden={true}
+      >
         <Text style={styles.unreadCountText}>{ticket?.unreadCount || 0}</Text>
       </Col>
     ),
@@ -103,6 +121,7 @@ export const TicketListItem = ({
         {...props}
         accessibilityRole="button"
         accessible={true}
+        accessibilityLabel={ticketAccessibilityLabel}
         linkTo={{
           screen: 'Ticket',
           params: { id: ticket.id },
@@ -169,6 +188,7 @@ export const TicketListItem = ({
       actions,
       onPressCloseTicket,
       t,
+      ticketAccessibilityLabel,
     ],
   );
 

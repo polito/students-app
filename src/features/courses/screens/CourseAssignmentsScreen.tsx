@@ -5,6 +5,7 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
+  View,
 } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -16,7 +17,10 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_IOS } from '../../../core/constants';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { formatDateTime } from '../../../utils/dates';
@@ -34,7 +38,9 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const courseId = useCourseContext();
   const assignmentsQuery = useGetCourseAssignments(courseId);
-  const { accessibilityListLabel } = useAccessibility();
+  useAnnounceLoading(assignmentsQuery.isLoading);
+  const { accessibilityListLabel, getListAccessibilityProps } =
+    useAccessibility();
   const isDisabled = useOfflineDisabled();
   const isCacheMissing = useOfflineDisabled(
     () => assignmentsQuery.data === undefined,
@@ -64,33 +70,40 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
           {!assignmentsQuery.isLoading &&
             assignmentsQuery.data &&
             (assignmentsQuery.data.length > 0 ? (
-              <List indented>
-                {assignmentsQuery.data.map((assignment, index) => (
-                  // this pressable is for ios accessibility
-                  <Pressable
-                    key={assignment.id}
-                    accessibilityRole="button"
-                    accessibilityLabel={[
-                      accessibilityListLabel(
-                        index,
-                        assignmentsQuery.data.length,
-                      ),
-                      assignment.description,
-                      assignment.deletedAt ? t('common.retracted') : '',
-                      `${formatFileSize(
-                        assignment.sizeInKiloBytes,
-                      )} - ${formatDateTime(assignment.uploadedAt)}`,
-                      t('common.downloadClick'),
-                      IS_IOS ? t('courseAssignmentsTab.longPress') : '',
-                    ].join(', ')}
-                  >
-                    <CourseAssignmentListItem
-                      item={assignment}
-                      disabled={isDisabled}
-                    />
-                  </Pressable>
-                ))}
-              </List>
+              <View
+                {...getListAccessibilityProps(
+                  t('courseAssignmentsTab.title'),
+                  assignmentsQuery.data.length,
+                )}
+              >
+                <List indented>
+                  {assignmentsQuery.data.map((assignment, index) => (
+                    // this pressable is for ios accessibility
+                    <Pressable
+                      key={assignment.id}
+                      accessibilityRole="button"
+                      accessibilityLabel={[
+                        accessibilityListLabel(
+                          index,
+                          assignmentsQuery.data.length,
+                        ),
+                        assignment.description,
+                        assignment.deletedAt ? t('common.retracted') : '',
+                        `${formatFileSize(
+                          assignment.sizeInKiloBytes,
+                        )} - ${formatDateTime(assignment.uploadedAt)}`,
+                        t('common.downloadClick'),
+                        IS_IOS ? t('courseAssignmentsTab.longPress') : '',
+                      ].join(', ')}
+                    >
+                      <CourseAssignmentListItem
+                        item={assignment}
+                        disabled={isDisabled}
+                      />
+                    </Pressable>
+                  ))}
+                </List>
+              </View>
             ) : (
               <OverviewList
                 emptyStateText={t('courseAssignmentsTab.emptyState')}

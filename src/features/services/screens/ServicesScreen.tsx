@@ -23,6 +23,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
@@ -45,6 +46,7 @@ export const ServicesScreen = () => {
     accessibility,
   } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
+  const { getBadgeAccessibilityLabel } = useAccessibility();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
   const queryClient = useQueryClient();
@@ -80,9 +82,10 @@ export const ServicesScreen = () => {
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
         unReadCount: unreadTickets,
-        accessibilityLabel: `${t('ticketsScreen.title')} ${
-          unreadTickets ? t('servicesScreen.newElement') : ''
-        }`,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          unreadTickets ?? 0,
+          t('ticketsScreen.title'),
+        ),
       },
       {
         id: 'appFeedback',
@@ -116,11 +119,10 @@ export const ServicesScreen = () => {
           screen: 'News',
         },
         unReadCount: getUnreadsCount(['services', 'news']),
-        accessibilityLabel: `${t('newsScreen.title')} ${
-          getUnreadsCount(['services', 'news'])
-            ? t('servicesScreen.newElement')
-            : ''
-        }`,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          getUnreadsCount(['services', 'news']) ?? 0,
+          t('newsScreen.title'),
+        ),
       },
       {
         id: 'jobOffers',
@@ -152,9 +154,10 @@ export const ServicesScreen = () => {
         icon: faSignsPost,
         linkTo: { screen: 'Guides' },
         unReadCount: emailGuideRead ? 0 : 1,
-        accessibilityLabel: `${t('guidesScreen.title')} ${
-          !emailGuideRead ? t('servicesScreen.newElement') : ''
-        }`,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          !emailGuideRead ? 1 : 0,
+          t('guidesScreen.title'),
+        ),
       },
       {
         id: 'bookings',
@@ -183,9 +186,10 @@ export const ServicesScreen = () => {
           ? unreadEmailsQuery.data.unreadEmails
           : 0,
         onPress: () => openWebmailLink(),
-        accessibilityLabel: `${t('WebMail')} ${
-          unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
-        }`,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          unreadEmailsQuery.data?.unreadEmails ?? 0,
+          'WebMail',
+        ),
       },
     ];
   }, [
@@ -195,6 +199,7 @@ export const ServicesScreen = () => {
     unreadTickets,
     styles.badge,
     getUnreadsCount,
+    getBadgeAccessibilityLabel,
     peopleSearched?.length,
     emailGuideRead,
     unreadEmailsQuery.data,

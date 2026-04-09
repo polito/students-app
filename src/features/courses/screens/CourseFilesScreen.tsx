@@ -28,6 +28,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -52,6 +56,8 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const multiSelectNav =
     (navigation.getParent()?.getParent() as any) ?? navigation;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  useAnnounceLoading(recentFilesQuery.isLoading);
+  const { getListAccessibilityProps } = useAccessibility();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext();
@@ -139,7 +145,13 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         isSelectDisabled={isDownloading || isRemoving}
       />
 
-      <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: 1 }}
+        {...getListAccessibilityProps(
+          t('courseInfoTab.files'),
+          fileListData.length,
+        )}
+      >
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={fileListData}

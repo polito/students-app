@@ -9,7 +9,10 @@ import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '../../../core/hooks/useAccessibilty';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
@@ -22,6 +25,7 @@ export const TicketListScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { statuses } = route.params;
   const ticketsQuery = useGetTickets();
+  useAnnounceLoading(ticketsQuery.isLoading);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { accessibilityListLabel, getListAccessibilityProps } =
     useAccessibility();

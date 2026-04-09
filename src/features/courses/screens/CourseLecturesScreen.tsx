@@ -31,6 +31,7 @@ import _ from 'lodash';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { TranslucentView } from '../../../core/components/TranslucentView';
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -51,6 +52,7 @@ export const CourseLecturesScreen = () => {
   const { spacing, colors } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
+  useAnnounceLoading(courseLecturesQuery.isLoading);
   const { clearNotificationScope } = useNotifications();
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =

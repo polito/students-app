@@ -60,8 +60,11 @@ export const MessageListItem = ({
         title,
         t('messagesScreen.sentAt'),
         accessibleDate,
+        !messageItem.isRead ? t('common.newItems', { count: 1 }) : undefined,
         t('messagesScreen.clickToNavigate'),
-      ].join(', ')}
+      ]
+        .filter(Boolean)
+        .join(', ')}
       subtitle={sentAt}
     />
   );

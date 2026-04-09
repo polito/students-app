@@ -57,7 +57,8 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
 
   const canSearch = search?.length > 2;
 
-  const { accessibilityListLabel } = useAccessibility();
+  const { accessibilityListLabel, getListAccessibilityProps } =
+    useAccessibility();
 
   useEffect(() => {
     if (!ticketFaqsQuery?.data) {
@@ -126,33 +127,43 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
           </OverviewList>
           {hasSearchedOnce &&
             (ticketFaqs.length > 0 ? (
-              <OverviewList indented>
-                {ticketFaqs.map((faq, index) => {
-                  const dom = parseDocument(
-                    faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-                  ) as Document;
-                  const title = innerText(dom.children as any[]);
-                  const accessibilityLabel = [
-                    accessibilityListLabel(index, ticketFaqs?.length || 0),
-                    title,
-                  ].join(', ');
-                  return (
-                    <ListItem
-                      accessibilityLabel={accessibilityLabel}
-                      key={faq.id}
-                      leadingItem={
-                        <Icon icon={faQuestionCircle} size={fontSizes['2xl']} />
-                      }
-                      linkTo={{
-                        screen: 'TicketFaq',
-                        params: { faq },
-                      }}
-                      title={<Text numberOfLines={3}>{title}</Text>}
-                      accessibilityRole="button"
-                    />
-                  );
-                })}
-              </OverviewList>
+              <View
+                {...getListAccessibilityProps(
+                  t('ticketFaqsScreen.title'),
+                  ticketFaqs.length,
+                )}
+              >
+                <OverviewList indented>
+                  {ticketFaqs.map((faq, index) => {
+                    const dom = parseDocument(
+                      faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+                    ) as Document;
+                    const title = innerText(dom.children as any[]);
+                    const accessibilityLabel = [
+                      accessibilityListLabel(index, ticketFaqs?.length || 0),
+                      title,
+                    ].join(', ');
+                    return (
+                      <ListItem
+                        accessibilityLabel={accessibilityLabel}
+                        key={faq.id}
+                        leadingItem={
+                          <Icon
+                            icon={faQuestionCircle}
+                            size={fontSizes['2xl']}
+                          />
+                        }
+                        linkTo={{
+                          screen: 'TicketFaq',
+                          params: { faq },
+                        }}
+                        title={<Text numberOfLines={3}>{title}</Text>}
+                        accessibilityRole="button"
+                      />
+                    );
+                  })}
+                </OverviewList>
+              </View>
             ) : (
               !ticketFaqsQuery.isFetching && (
                 <OverviewList
