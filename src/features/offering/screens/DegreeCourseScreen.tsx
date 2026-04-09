@@ -112,7 +112,6 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                 <View
                   style={GlobalStyles.grow}
                   importantForAccessibility="yes"
-                  accessibilityRole="button"
                   accessible={true}
                 >
                   <StatefulMenuView
@@ -174,7 +173,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               offeringCourse.hours.classroomExercise ||
               offeringCourse.hours.labExercise ||
               offeringCourse.hours.tutoring) && (
-              <OverviewList>
+              <OverviewList accessibilityRole="list">
                 {!!offeringCourse.hours.lecture && (
                   <ListItem
                     inverted
@@ -292,18 +291,27 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   : undefined
               }
             />
-            <OverviewList emptyStateText={t('degreeCourseScreen.noStaff')}>
-              {offeringCourse?.staff?.slice(0, 3).map(item => (
+            <OverviewList
+              emptyStateText={t('degreeCourseScreen.noStaff')}
+              accessibilityRole="list"
+              accessibilityLabel={t('degreeCourseScreen.staff')}
+            >
+              {offeringCourse?.staff?.slice(0, 3).map((item, index, arr) => (
                 <StaffListItem
                   key={`${item.id}${item.courseId}`}
                   staff={item}
+                  index={index}
+                  total={arr.length}
                 />
               ))}
             </OverviewList>
           </Section>
           <Section>
             <SectionHeader title={t('common.other')} />
-            <OverviewList>
+            <OverviewList
+              accessibilityRole="list"
+              accessibilityLabel={t('common.other')}
+            >
               <ListItem
                 title={t('courseGuideScreen.title')}
                 linkTo={{

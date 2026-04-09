@@ -60,7 +60,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
       t('profileScreen.enrollmentYear', {
         enrollmentYear: `${previousDegreeYear}/${getShortYear(degreeYear)}`,
       }),
-      t('profileScreen.year click'),
+      t('offeringScreen.yearSelectorHint'),
     ].join(', ');
     navigation.setOptions({
       headerRight: () => (
@@ -68,6 +68,9 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
           accessibilityLabel={accessibilityLabel}
           importantForAccessibility="yes"
           accessibilityRole="button"
+          accessibilityState={{
+            disabled: yearOptions.length <= 1 || isOffline,
+          }}
           accessible={true}
         >
           <StatefulMenuView

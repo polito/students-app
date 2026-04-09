@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
-import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -18,6 +18,7 @@ export const PersonListItem = ({
   person,
   subtitle,
   navigateEnabled = true,
+  ...rest
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
   const { t } = useTranslation();
@@ -41,7 +42,9 @@ export const PersonListItem = ({
           <Image
             source={{ uri: person.picture }}
             style={styles.picture}
-            accessibilityLabel={`Profile picture of ${person.firstName} ${person.lastName}`}
+            accessibilityLabel={t('common.profilePicture', {
+              name: `${person.firstName} ${person.lastName}`,
+            })}
           />
         ) : (
           <Icon icon={faUser} size={fontSizes['2xl']} />
@@ -58,6 +61,7 @@ export const PersonListItem = ({
           : undefined
       }
       subtitle={subtitle}
+      {...rest}
     />
   );
 };

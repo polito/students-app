@@ -47,7 +47,11 @@ export const StaffScreen = ({ route }: Props) => {
             loading={isLoading}
             accessible={true}
             accessibilityRole="list"
-            accessibilityLabel={`${t('common.staffList')} - ${staffPeople.length} ${t('common.members')}`}
+            accessibilityLabel={
+              isLoading
+                ? t('common.loading')
+                : t('staffScreen.staffList', { count: staffPeople.length })
+            }
           >
             {staffPeople.map((person, index) => (
               <StaffListItem

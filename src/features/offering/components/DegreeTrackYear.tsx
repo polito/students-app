@@ -41,7 +41,7 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
       'first',
       'second',
       'third',
-      'quarto',
+      'fourth',
       'fifth',
       'sixth',
       'seventh',
@@ -74,7 +74,10 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
         style={styles.firstLevelOverviewList}
         accessible={true}
         accessibilityRole="list"
-        accessibilityLabel={`${t('common.coursesList')} ${accessibilityYearLabel} - ${firstLevelCourses.length + coursesByGroup.length} elementi`}
+        accessibilityLabel={t('common.listWithCount', {
+          name: accessibilityYearLabel,
+          count: firstLevelCourses.length + coursesByGroup.length,
+        })}
       >
         {firstLevelCourses.map((course, index) => (
           <ListItem
@@ -97,9 +100,10 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
               },
             }}
             accessibilityRole="button"
-            accessibilityHint={t('common.tapToViewCourseDetails')}
+            accessibilityHint={t('common.tapToNavigate')}
             trailingItem={<CourseTrailingItem cfu={course.cfu} />}
             disabled={isOffline}
+            accessibilityState={{ disabled: isOffline }}
           />
         ))}
         {coursesByGroup.map((group, index) => (

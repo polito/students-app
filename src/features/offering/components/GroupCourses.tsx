@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -27,15 +28,19 @@ export const GroupCourses = ({
 }: GroupCoursesProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   return (
     <Col style={styles.container}>
       <Pressable
         onPress={toggleExpand}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={`${group.name} ${group.data.length} corsi`}
+        accessibilityLabel={t('offeringScreen.groupLabel', {
+          name: group.name,
+          count: group.data.length,
+        })}
         accessibilityState={{ expanded: isExpanded }}
-        accessibilityHint="Tocca per espandere o collassare il gruppo di corsi"
+        accessibilityHint={t('offeringScreen.expandCollapseHint')}
       >
         <Row justify="space-between" align="center">
           <Text variant="title" style={styles.title}>

@@ -12,7 +12,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
-import { sanitizeHtml } from '../../../utils/html';
+import { getHtmlTextContent, sanitizeHtml } from '../../../utils/html';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'DegreeCourseGuide'>;
@@ -30,19 +30,15 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
     >
       <SafeAreaView>
         <Section>
-          <Card
-            padded
-            gapped
-            style={styles.card}
-            accessible={true}
-            accessibilityRole="text"
-          >
+          <Card padded gapped style={styles.card}>
             {offeringCourse?.guide.map((section, i) => (
               <Col
                 key={`guide-section-${section.title}-${i}`}
-                accessible={true}
                 accessibilityRole="text"
-                accessibilityLabel={[section.title, section.content].join(', ')}
+                accessibilityLabel={[
+                  section.title,
+                  getHtmlTextContent(section.content),
+                ].join(', ')}
               >
                 <Text variant="subHeading" accessibilityRole="header">
                   {section.title}

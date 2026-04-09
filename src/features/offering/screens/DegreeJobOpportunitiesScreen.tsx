@@ -31,16 +31,10 @@ export const DegreeJobOpportunitiesScreen = () => {
       <SafeAreaView>
         <LoadingContainer loading={isLoading}>
           <Section>
-            <Card
-              padded
-              accessible={true}
-              accessibilityRole="text"
-              accessibilityLabel={`${degree?.jobOpportunities?.title || ''} ${getHtmlTextContent(degree?.jobOpportunities?.content ?? '')}`}
-            >
+            <Card padded>
               <Text
                 variant="subHeading"
                 style={styles.subHeading}
-                accessible={true}
                 accessibilityRole="header"
               >
                 {degree?.jobOpportunities?.title}

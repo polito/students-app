@@ -36,11 +36,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
               <Text
                 accessibilityRole="text"
                 accessible={true}
-                accessibilityLabel={[
-                  item?.name,
-                  ', ',
-                  t('offeringScreen.section'),
-                ].join(' ')}
+                accessibilityLabel={`${item?.name}, ${t('offeringScreen.section')}`}
                 variant="subHeading"
                 style={styles.offeringClass}
               >
@@ -59,6 +55,8 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
                       numberOfLines: undefined,
                     }}
                     accessibilityRole="button"
+                    accessibilityHint={t('common.tapToNavigate')}
+                    accessibilityState={{ disabled: isOffline }}
                     linkTo={{
                       screen: 'Degree',
                       params: {

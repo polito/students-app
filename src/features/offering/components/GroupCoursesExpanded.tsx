@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { OfferingCourseOverview } from '@polito/student-api-client';
@@ -11,6 +13,7 @@ interface Props {
 }
 export const GroupCoursesExpanded = ({ courses, disabled }: Props) => {
   const { year } = useDegreeContext();
+  const { t } = useTranslation();
 
   return (
     <OverviewList
@@ -18,6 +21,9 @@ export const GroupCoursesExpanded = ({ courses, disabled }: Props) => {
       style={{ elevation: 0 }}
       accessible={true}
       accessibilityRole="list"
+      accessibilityLabel={t('offeringScreen.coursesList', {
+        count: courses.length,
+      })}
     >
       {courses.map(course => {
         return (
@@ -36,8 +42,9 @@ export const GroupCoursesExpanded = ({ courses, disabled }: Props) => {
             disabled={disabled}
             accessible={true}
             accessibilityRole="button"
-            accessibilityLabel={`${course.name}, ${course.cfu} CFU`}
-            accessibilityHint="Tocca per visualizzare i dettagli del corso"
+            accessibilityLabel={`${course.name}, ${course.cfu} ${t('common.cfu')}`}
+            accessibilityHint={t('offeringScreen.tapToViewCourse')}
+            accessibilityState={{ disabled: disabled }}
           />
         );
       })}

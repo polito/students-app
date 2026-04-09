@@ -102,6 +102,7 @@ export const DegreeInfoScreen = () => {
               <View
                 accessibilityRole="text"
                 accessible={true}
+                importantForAccessibility="no-hide-descendants"
                 accessibilityLabel={`${t('common.notes')}: ${degree?.notes?.map(note => getHtmlTextContent(note)).join('. ') || t('common.noDataAvailable')}`}
               >
                 <Text variant="subHeading">{t('common.notes')}</Text>
@@ -118,6 +119,7 @@ export const DegreeInfoScreen = () => {
                 <View
                   accessibilityRole="text"
                   accessible={true}
+                  importantForAccessibility="no-hide-descendants"
                   accessibilityLabel={`${t('common.objectives')}: ${getHtmlTextContent(degree.objectives.content)}`}
                 >
                   <Text variant="subHeading">{t('common.objectives')}</Text>
