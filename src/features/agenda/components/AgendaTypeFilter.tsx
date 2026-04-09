@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
@@ -41,6 +41,8 @@ export const AgendaTypeFilter = () => {
 
   const { colors } = useTheme();
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const colorsMap: Record<AgendaItemType, string | null> = useMemo(() => {
     return {
       booking: colors.bookingCardBorder,
@@ -68,7 +70,11 @@ export const AgendaTypeFilter = () => {
     } else {
       return selectedTypes.map(type => (
         <View key={type} style={styles.buttonType}>
-          <Icon icon={faCircle} color={colorsMap[type] ?? undefined} />
+          <Icon
+            icon={faCircle}
+            color={colorsMap[type] ?? undefined}
+            accessible={false}
+          />
           <Text>{getLocalizedType(type)}</Text>
         </View>
       ));
@@ -108,7 +114,6 @@ export const AgendaTypeFilter = () => {
 
   return (
     <Pressable
-      accessible={true}
       accessibilityLabel={[t('common.filterFor'), pillContentText].join(', ')}
       style={styles.typeFilter}
     >
@@ -117,7 +122,7 @@ export const AgendaTypeFilter = () => {
         accessibilityRole="button"
         accessibilityLabel={t('agendaTypeFilter.filterButton')}
         accessibilityHint={t('agendaTypeFilter.filterHint')}
-        accessibilityState={{ expanded: false }}
+        accessibilityState={{ expanded: isOpen }}
       >
         <View style={styles.typeFilter}>
           <Text key="events">{t('common.event_plural')} </Text>

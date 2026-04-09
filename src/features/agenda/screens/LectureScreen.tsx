@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Dimensions,
   ListRenderItemInfo,
   SafeAreaView,
@@ -63,6 +64,10 @@ export const LectureScreen = ({ route, navigation }: Props) => {
 
   const handleSetCurrentPageIndex = (newIndex: number) => {
     setCurrentVideoIndex(newIndex);
+    const title = associatedVirtualClassrooms?.[newIndex]?.title;
+    if (title) {
+      AccessibilityInfo.announceForAccessibility(title);
+    }
   };
 
   const toggleFullScreen = (value: boolean) => {
@@ -298,6 +303,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           action={hideEvent}
           destructive
           absolute={false}
+          accessibilityHint={t('lectureScreen.hideEventHint')}
           containerStyle={{
             paddingVertical: 0,
             display: isFullScreen ? 'none' : undefined,

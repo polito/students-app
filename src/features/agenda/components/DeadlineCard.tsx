@@ -5,6 +5,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { DeadlineItem } from '../types/AgendaItem';
 
 interface Props {
@@ -24,6 +26,7 @@ export const DeadlineCard = ({ item, compact = false }: Props) => {
       type={t('common.deadline')}
       color={colors.deadlineCardBorder}
       isCompact={compact}
+      time={item.start.toLocaleString(DateTime.DATE_MED)}
       onPress={() =>
         navigate({
           name: 'Deadline',

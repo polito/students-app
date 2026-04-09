@@ -55,6 +55,9 @@ export const AgendaPreferencesScreen = ({ navigation }: Props) => {
                       <SwitchListItem
                         key={`${course.shortcode}-${course.id}-${index}`}
                         title={course.name}
+                        accessibilityLabel={
+                          course.name ?? t('agendaPreferencesScreen.courseItem')
+                        }
                         disabled={!coursesPrefs[course.uniqueShortcode]}
                         value={
                           !coursesPrefs[course.uniqueShortcode]
@@ -88,6 +91,9 @@ export const AgendaPreferencesScreen = ({ navigation }: Props) => {
             <ListItem
               title={t('common.hiddenEvents')}
               isAction
+              accessibilityRole="button"
+              accessibilityHint={t('agendaPreferencesScreen.hiddenEventsHint')}
+              accessibilityState={{ disabled: !hasHiddenEvents }}
               onPress={() => {
                 navigation.navigate('HiddenEvents');
               }}

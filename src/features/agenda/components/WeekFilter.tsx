@@ -41,17 +41,13 @@ export const WeekFilter = ({
   }, [current, endOfWeek]);
 
   return (
-    <Row
-      align="center"
-      accessible={true}
-      accessibilityLabel={`${current.toFormat('d MMM')} - ${endOfWeek.toFormat(
-        'd MMM',
-      )}`}
-    >
+    <Row align="center">
       <IconButton
         accessibilityRole="button"
         icon={faChevronLeft}
-        accessibilityLabel={t('agendaScreen.previous week')}
+        accessibilityLabel={t('agendaScreen.previousWeek')}
+        accessibilityHint={t('agendaScreen.prevWeekHint')}
+        accessibilityState={{ disabled: isPrevWeekDisabled }}
         color={colors.secondaryText}
         disabled={isPrevWeekDisabled}
         onPress={() => getPrev()}
@@ -67,7 +63,9 @@ export const WeekFilter = ({
       <IconButton
         accessibilityRole="button"
         icon={faChevronRight}
-        accessibilityLabel={t('agendaScreen.next week')}
+        accessibilityLabel={t('agendaScreen.nextWeek')}
+        accessibilityHint={t('agendaScreen.nextWeekHint')}
+        accessibilityState={{ disabled: isNextWeekDisabled }}
         color={colors.secondaryText}
         disabled={isNextWeekDisabled}
         onPress={() => getNext()}

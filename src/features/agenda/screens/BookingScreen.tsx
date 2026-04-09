@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -130,6 +131,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     [booking],
   );
 
+  useEffect(() => {
+    if (completedCheckIn) {
+      AccessibilityInfo.announceForAccessibility(
+        t('bookingScreen.checkInSuccess'),
+      );
+    }
+  }, [completedCheckIn, t]);
+
   const onPressCheckIn = async () => {
     if (!booking?.id) return;
     getCurrentPosition().then(currentDeviceCoordinates => {
@@ -214,9 +223,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               <ListItem
                 isAction={booking?.location?.type !== 'virtualPlace'}
                 accessibilityRole={
-                  booking?.location?.type === 'virtualPlace' ? 'text' : 'button'
+                  booking?.location?.type === 'virtualPlace' ? 'link' : 'button'
                 }
                 accessibilityLabel={locationAccessibilityLabel}
+                accessibilityHint={t('bookingScreen.locationHint')}
                 leadingItem={
                   <Icon
                     icon={faLocation}
@@ -236,6 +246,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               <ListItem
                 accessibilityRole="button"
                 accessibilityLabel={seatAccessibilityLabel}
+                accessibilityHint={t('bookingScreen.seatHint')}
                 leadingItem={
                   <Icon
                     icon={faSeat}
@@ -307,6 +318,13 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                   updateBookingMutation.isPending ||
                   completedCheckIn
                 }
+                accessibilityHint={t('bookingScreen.checkInHint')}
+                accessibilityState={{
+                  disabled:
+                    isDisabled ||
+                    updateBookingMutation.isPending ||
+                    !!completedCheckIn,
+                }}
                 containerStyle={{ paddingVertical: 0 }}
               />
             )}
@@ -318,6 +336,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                 absolute={false}
                 disabled={isDisabled || deleteBookingMutation.isPending}
                 destructive={true}
+                accessibilityHint={t('bookingScreen.cancelHint')}
+                accessibilityState={{
+                  disabled: isDisabled || deleteBookingMutation.isPending,
+                }}
                 containerStyle={{ paddingVertical: 0 }}
               />
             )}

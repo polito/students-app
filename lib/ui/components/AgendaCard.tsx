@@ -157,10 +157,13 @@ export const AgendaCard = ({
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
+        accessibilityHint={t('common.tapToNavigate')}
+        accessibilityState={{ disabled: !onPress }}
         disabled={!onPress}
       >
         <Col
           gap={isCompact ? 0.5 : 2}
+          importantForAccessibility="no-hide-descendants"
           style={
             isCompact && { height: '100%', justifyContent: 'space-between' }
           }
