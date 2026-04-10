@@ -57,6 +57,7 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   style?: ViewStyle;
   hours?: number[];
   startHour?: number;
+  locale?: string;
 }
 
 export const CalendarBody = <T extends ICalendarEventBase>({
@@ -82,6 +83,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   hideHours = false,
   hours = HOURS,
   startHour = 8,
+  locale,
 }: CalendarBodyProps<T>) => {
   const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
@@ -245,6 +247,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                     calendarCellStyle={calendarCellStyle}
                     showBorderRight={!isLastDate}
                     showBorderBottom={index < hours.length - 1}
+                    locale={locale}
                   />
                 ))}
 

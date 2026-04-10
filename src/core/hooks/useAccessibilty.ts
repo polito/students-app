@@ -30,7 +30,6 @@ export function useAccessibility() {
   const getListAccessibilityProps = useCallback(
     (listName: string, itemCount: number) => {
       return {
-        accessible: true,
         accessibilityRole: 'list' as const,
         accessibilityLabel: t('common.listWithCount', {
           name: listName,

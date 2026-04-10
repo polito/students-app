@@ -230,31 +230,25 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
     navigation.setOptions({
       headerRight: () => (
-        <>
+        <View style={{ flexDirection: 'row', alignItems: 'center', height: '100%' }}>
           <IconButton
             icon={faCalendarDay}
             color={palettes.primary[400]}
             size={fontSizes.lg}
-            adjustSpacing="left"
+            adjustSpacing="right"
             accessibilityLabel={t('agendaScreen.selectDate')}
             onPress={() => setDataPickerIsOpened(true)}
           />
-          <View
-            accessibilityRole="button"
-            accessible
-            accessibilityLabel={t('common.options')}
-          >
-            <MenuView actions={screenOptions} onPressAction={onPressOption}>
-              <IconButton
-                accessible={false}
-                icon={faEllipsisVertical}
-                color={palettes.primary[400]}
-                size={fontSizes.lg}
-                adjustSpacing="right"
-              />
-            </MenuView>
-          </View>
-        </>
+          <MenuView actions={screenOptions} onPressAction={onPressOption} style={{ alignSelf: 'center' }}>
+            <IconButton
+              icon={faEllipsisVertical}
+              color={palettes.primary[400]}
+              size={fontSizes.lg}
+              adjustSpacing="right"
+              accessibilityLabel={t('common.options')}
+            />
+          </MenuView>
+        </View>
       ),
     });
   }, [

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -9,7 +9,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuAction } from '@react-native-menu/menu';
+import { MenuAction, MenuView, NativeActionEvent } from '@react-native-menu/menu';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { ALL_AGENDA_TYPES, AgendaItemType } from '../types/AgendaItem';
@@ -112,15 +112,19 @@ export const AgendaTypeFilter = () => {
     });
   }, [filters, colorsMap, getLocalizedType]);
 
+  const onPressAction = useCallback(
+    ({ nativeEvent: { event } }: NativeActionEvent) => {
+      toggleFilter(event as AgendaItemType);
+    },
+    [toggleFilter],
+  );
+
   return (
-    <Pressable
-      accessibilityLabel={[t('common.filterFor'), pillContentText].join(', ')}
-      style={styles.typeFilter}
-    >
+    <MenuView actions={typeActions} onPressAction={onPressAction}>
       <PillDropdownActivator
         variant="neutral"
         accessibilityRole="button"
-        accessibilityLabel={t('agendaTypeFilter.filterButton')}
+        accessibilityLabel={[t('agendaTypeFilter.filterButton'), pillContentText].join(', ')}
         accessibilityHint={t('agendaTypeFilter.filterHint')}
         accessibilityState={{ expanded: isOpen }}
       >
@@ -141,7 +145,7 @@ export const AgendaTypeFilter = () => {
           </Text>
         </View>
       </PillDropdownActivator>
-    </Pressable>
+    </MenuView>
   );
 };
 

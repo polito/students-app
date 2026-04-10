@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -102,25 +102,28 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
         </Text>
       ),
       headerRight: () => (
-        <IconButton
-          icon={faCog}
-          color={palettes.primary[400]}
-          size={fontSizes.lg}
-          accessibilityRole="button"
-          accessibilityLabel={t('common.preferences')}
-          accessibilityHint={t('courseInfoTab.preferencesHint')}
-          hitSlop={{
-            left: +spacing[3],
-            right: +spacing[3],
-          }}
-          adjustSpacing="right"
-          onPress={() => {
-            navigation.navigate('CoursePreferences', {
-              courseId: id,
-              uniqueShortcode: correctUniqueShortcode,
-            });
-          }}
-        />
+        <View style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+          <IconButton
+            icon={faCog}
+            color={palettes.primary[400]}
+            style={{ marginBottom: spacing[3], marginRight: spacing[3] }}
+            size={fontSizes.lg}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.preferences')}
+            accessibilityHint={t('courseInfoTab.preferencesHint')}
+            hitSlop={{
+              left: +spacing[3],
+              right: +spacing[3],
+            }}
+            adjustSpacing="right"
+            onPress={() => {
+              navigation.navigate('CoursePreferences', {
+                courseId: id,
+                uniqueShortcode: correctUniqueShortcode,
+              });
+            }}
+          />
+        </View>
       ),
     });
   }, [

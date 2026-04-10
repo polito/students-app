@@ -215,7 +215,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
             icon={faCalendarDay}
             color={palettes.primary[400]}
             size={fontSizes.lg}
-            adjustSpacing="left"
+            adjustSpacing="right"
             accessibilityLabel={t('agendaScreen.selectDate')}
             onPress={() => setDataPickerIsOpened(true)}
           />

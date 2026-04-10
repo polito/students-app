@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
@@ -24,37 +25,77 @@ interface Props {
 
 export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
   const styles = useStylesheet(createStyles);
+  const { i18n } = useTranslation();
   const dayOfMonth = agendaDay.date.toFormat('d');
   const weekDay = agendaDay.date.toFormat('EEE');
   const monthOfYear =
     !isCurrentMonth(agendaDay.date) && agendaDay.date.toFormat('MMM');
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
 
+  const dayAccessibilityLabel = agendaDay.date
+    .setLocale(i18n.language)
+    .toLocaleString({
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      ...(year ? { year: 'numeric' } : {}),
+    });
+
   return (
     <Row onLayout={onLayout}>
       <Col style={styles.dayColumn} align="stretch">
         {agendaDay.isToday ? (
-          <View style={[styles.dayBox, styles.todayBox]}>
-            <Text variant="heading" style={[styles.secondaryDay, styles.today]}>
+          <View
+            style={[styles.dayBox, styles.todayBox]}
+            accessible={true}
+            accessibilityLabel={dayAccessibilityLabel}
+          >
+            <Text
+              variant="heading"
+              style={[styles.secondaryDay, styles.today]}
+              importantForAccessibility="no"
+            >
               {weekDay}
             </Text>
-            <Text variant="heading" style={styles.today}>
+            <Text
+              variant="heading"
+              style={styles.today}
+              importantForAccessibility="no"
+            >
               {dayOfMonth}
             </Text>
           </View>
         ) : (
-          <View style={styles.dayBox}>
-            <Text variant="heading" style={styles.secondaryDay}>
+          <View
+            style={styles.dayBox}
+            accessible={true}
+            accessibilityLabel={dayAccessibilityLabel}
+          >
+            <Text
+              variant="heading"
+              style={styles.secondaryDay}
+              importantForAccessibility="no"
+            >
               {weekDay}
             </Text>
-            <Text variant="heading">{dayOfMonth}</Text>
+            <Text variant="heading" importantForAccessibility="no">
+              {dayOfMonth}
+            </Text>
             {monthOfYear && (
-              <Text variant="heading" style={styles.secondaryDay}>
+              <Text
+                variant="heading"
+                style={styles.secondaryDay}
+                importantForAccessibility="no"
+              >
                 {monthOfYear}
               </Text>
             )}
             {year && (
-              <Text variant="heading" style={styles.secondaryDay}>
+              <Text
+                variant="heading"
+                style={styles.secondaryDay}
+                importantForAccessibility="no"
+              >
                 {year}
               </Text>
             )}

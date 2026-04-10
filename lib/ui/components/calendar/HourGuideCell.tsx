@@ -16,6 +16,7 @@ interface HourGuideCellProps {
   calendarCellStyle?: CalendarCellStyle;
   showBorderRight?: boolean;
   showBorderBottom?: boolean;
+  locale?: string;
 }
 
 export const HourGuideCell = ({
@@ -27,6 +28,7 @@ export const HourGuideCell = ({
   calendarCellStyle,
   showBorderRight = false,
   showBorderBottom = false,
+  locale,
 }: HourGuideCellProps) => {
   const theme = useTheme();
 
@@ -38,9 +40,19 @@ export const HourGuideCell = ({
     [calendarCellStyle],
   );
 
+  const accessibilityLabel = useMemo(() => {
+    const dayName = date
+      .setLocale(locale ?? 'en')
+      .toLocaleString({ weekday: 'long' });
+    const hourStr = String(hour).padStart(2, '0') + ':00';
+    return `${dayName}, ${hourStr}`;
+  }, [date, hour, locale]);
+
   return (
     <TouchableWithoutFeedback
       onPress={() => onPress(date.set({ hour: hour, minute: 0 }))}
+      accessible={true}
+      accessibilityLabel={accessibilityLabel}
     >
       <View
         style={[

@@ -252,6 +252,7 @@ export const Calendar = <T extends ICalendarEventBase>({
         isEventOrderingEnabled={isEventOrderingEnabled}
         hours={hours}
         startHour={startHour}
+        locale={locale}
       />
     </>
   );
