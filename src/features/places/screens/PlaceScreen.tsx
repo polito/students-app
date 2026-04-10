@@ -57,11 +57,12 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
+  const fallbackLocation = !!(long && lat);
   const {
     data: place,
     isLoading: isLoadingPlace,
     error: getPlaceError,
-  } = useGetPlace(placeId);
+  } = useGetPlace(placeId, fallbackLocation);
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
   const siteId = place?.site.id;
   const placeFloorId = place?.floor.id;

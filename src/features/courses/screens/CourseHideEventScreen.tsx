@@ -88,7 +88,11 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
             />
           )}
         </Row>
-        <EventInfo item={item} place={place} placeLoading={placeLoading} />
+        <EventInfo
+          item={item}
+          place={place ?? undefined}
+          placeLoading={placeLoading}
+        />
       </Col>
     </Row>
   );
