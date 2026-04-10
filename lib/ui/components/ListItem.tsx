@@ -145,9 +145,9 @@ export const ListItem = ({
       onPress={
         linkTo
           ? () => {
-            const resolved = resolveLinkTo(linkTo);
-            navigation.navigate(resolved.name as any, resolved.params);
-          }
+              const resolved = resolveLinkTo(linkTo);
+              navigation.navigate(resolved.name as any, resolved.params);
+            }
           : onPress
       }
       style={[
