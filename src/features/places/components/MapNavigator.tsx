@@ -112,10 +112,6 @@ export const MapNavigator = ({
     }),
     [mapDefaultOptions?.camera, mapOptions?.camera],
   );
-  const cameraOptionsSignature = useMemo(
-    () => JSON.stringify(cameraOptions),
-    [cameraOptions],
-  );
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
@@ -150,23 +146,22 @@ export const MapNavigator = ({
   }, [orientation]);
 
   useEffect(() => {
-    if (!IS_IOS || !cameraRef.current || cameraOptionsSignature === '{}') {
+    if (
+      !IS_IOS ||
+      !cameraRef.current ||
+      Object.keys(cameraOptions).length === 0
+    ) {
       return;
     }
 
-    const applyCamera = () => {
-      cameraRef.current?.setCamera(cameraOptions);
-    };
-
-    applyCamera();
-    const frame = requestAnimationFrame(applyCamera);
-    const timeout = setTimeout(applyCamera, 250);
+    const frame = requestAnimationFrame(() =>
+      cameraRef.current?.setCamera(cameraOptions),
+    );
 
     return () => {
       cancelAnimationFrame(frame);
-      clearTimeout(timeout);
     };
-  }, [cameraOptions, cameraOptionsSignature]);
+  }, [cameraOptions]);
 
   useEffect(() =>
     // reaped from @react-navigation/native-stack/src/navigators/createNativeStackNavigator

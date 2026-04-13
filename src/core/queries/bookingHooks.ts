@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { BookingsApi } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { toOASTruncable } from '~/utils/dates';
+
 import { DateTime } from 'luxon';
 
 import { pluckData } from '../../utils/queries';
@@ -56,8 +58,8 @@ export const useGetBookingSlots = (
       bookingClient
         .getBookingSlots({
           bookingTopicId,
-          fromDate: toTimezoneSafeDate(fromDate),
-          toDate: toTimezoneSafeDate(toDate),
+          fromDate: toOASTruncable(fromDate),
+          toDate: toOASTruncable(toDate),
         })
         .then(pluckData),
     enabled: true,
