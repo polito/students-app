@@ -41,8 +41,6 @@ export const useGetBookingSlots = (
   bookingTopicId: string,
   weekStart: DateTime,
 ) => {
-  const toTimezoneSafeDate = (date: DateTime) =>
-    date.set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).toJSDate();
   const bookingClient = useBookingClient();
   const fromDate = weekStart.startOf('week');
   const toDate = weekStart.endOf('week');
