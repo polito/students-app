@@ -146,7 +146,11 @@ export const useCreateBooking = () => {
         },
       }),
     onSuccess() {
-      return client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY });
+      return Promise.all([
+        client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: ['agenda'] }),
+      ]);
     },
   });
 };
@@ -165,6 +169,7 @@ export const useDeleteBooking = (bookingId: number) => {
       );
       return Promise.all([
         client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY }),
         client.invalidateQueries({ queryKey: ['agenda'] }),
       ]);
     },

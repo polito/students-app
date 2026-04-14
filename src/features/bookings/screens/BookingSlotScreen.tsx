@@ -27,7 +27,9 @@ import { WeekNum } from '@lib/ui/types/Calendar';
 import { CALENDAR_CELL_HEIGHT } from '@lib/ui/utils/calendar';
 import { BookingSlot } from '@polito/student-api-client';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
@@ -38,6 +40,7 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
+  BOOKINGS_SLOTS_QUERY_KEY,
   useGetBookingSlots,
   useGetBookingTopics,
   useGetBookings,
@@ -79,6 +82,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
   const { language } = usePreferencesContext();
+  const queryClient = useQueryClient();
 
   const [showAgenda, setShowAgenda] = useState<boolean | null>(null);
   const [currentWeekStart, setCurrentWeekStart] = useState(
@@ -111,6 +115,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
 
   const showAgendaLayout =
     showAgenda !== null ? showAgenda : !!currentTopic.agendaView;
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.refetchQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY });
+    }, [queryClient]),
+  );
 
   useEffect(() => {
     setShowAgenda(null);
