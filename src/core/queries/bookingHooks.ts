@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { BookingsApi } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { toOASTruncable } from '~/utils/dates';
+
 import { DateTime } from 'luxon';
 
 import { pluckData } from '../../utils/queries';
@@ -54,8 +56,8 @@ export const useGetBookingSlots = (
       bookingClient
         .getBookingSlots({
           bookingTopicId,
-          fromDate: fromDate.toJSDate(),
-          toDate: toDate.toJSDate(),
+          fromDate: toOASTruncable(fromDate),
+          toDate: toOASTruncable(toDate),
         })
         .then(pluckData),
     enabled: true,
@@ -144,7 +146,11 @@ export const useCreateBooking = () => {
         },
       }),
     onSuccess() {
-      return client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY });
+      return Promise.all([
+        client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: ['agenda'] }),
+      ]);
     },
   });
 };
@@ -163,6 +169,7 @@ export const useDeleteBooking = (bookingId: number) => {
       );
       return Promise.all([
         client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY }),
         client.invalidateQueries({ queryKey: ['agenda'] }),
       ]);
     },

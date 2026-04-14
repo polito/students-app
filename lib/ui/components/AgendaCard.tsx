@@ -151,8 +151,8 @@ export const AgendaCard = ({
           {/* Time and event type are only shown if the card is not compact */}
           {!isCompact && !nextLecture && (
             <>
-              <Row align="flex-end" justify="space-between" flexGrow={1}>
-                <Row gap={2}>
+              <Row align="flex-end" flexGrow={1} gap={2}>
+                <Row gap={2} flexShrink={0}>
                   <Text
                     style={[
                       styles.time,
@@ -172,19 +172,23 @@ export const AgendaCard = ({
                     <Text
                       uppercase
                       variant="caption"
-                      style={secondaryIfLecture}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={[secondaryIfLecture, styles.typeMeta]}
                     >
                       {type}
                     </Text>
                   )}
               </Row>
-              <Row>
+              <Row style={{ flex: 1 }}>
                 {accessibility?.fontSize &&
                   Number(accessibility?.fontSize) >= 150 && (
                     <Text
                       uppercase
                       variant="caption"
-                      style={secondaryIfLecture}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={[secondaryIfLecture, styles.typeMetaFullWidth]}
                     >
                       {type}
                     </Text>
@@ -368,6 +372,15 @@ const createStyles = ({
     time: {
       color: colors.secondaryText,
       fontSize: fontSizes.sm,
+    },
+    typeMeta: {
+      flexGrow: 1,
+      flexShrink: 1,
+      minWidth: 0,
+      textAlign: 'right',
+    },
+    typeMetaFullWidth: {
+      width: '100%',
     },
     type: {
       color: dark ? palettes.text[300] : palettes.text[400],

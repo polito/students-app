@@ -1,4 +1,10 @@
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 
@@ -35,7 +41,7 @@ import { Polygon } from 'geojson';
 import { MAX_RECENT_SEARCHES } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetPlace } from '../../../core/queries/placesHooks';
+import { useGetPlace, useGetSites } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
@@ -57,25 +63,74 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
+  const fallbackLocation = !!(long && lat);
   const {
     data: place,
     isLoading: isLoadingPlace,
     error: getPlaceError,
-  } = useGetPlace(placeId);
+  } = useGetPlace(placeId, fallbackLocation);
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
-  const siteId = place?.site.id;
+  const placeSiteId = place?.site.id;
   const placeFloorId = place?.floor.id;
+  const { data: sites } = useGetSites();
+  const fallbackCoordinates = useMemo(() => {
+    if (!long || !lat) return null;
+
+    const longitude = Number(long);
+    const latitude = Number(lat);
+    if (Number.isNaN(longitude) || Number.isNaN(latitude)) return null;
+
+    return { latitude, longitude };
+  }, [lat, long]);
+
+  const fallbackSite = useMemo(() => {
+    if (!fallbackCoordinates || !sites?.data?.length) {
+      return null;
+    }
+
+    const matchingSites = sites.data.filter(site => {
+      const latDiff = Math.abs(fallbackCoordinates.latitude - site.latitude);
+      const lonDiff = Math.abs(fallbackCoordinates.longitude - site.longitude);
+      return latDiff <= site.extent && lonDiff <= site.extent;
+    });
+
+    if (!matchingSites.length) {
+      return null;
+    }
+
+    return matchingSites.reduce((closest, current) => {
+      const closestDistance =
+        Math.pow(closest.latitude - fallbackCoordinates.latitude, 2) +
+        Math.pow(closest.longitude - fallbackCoordinates.longitude, 2);
+      const currentDistance =
+        Math.pow(current.latitude - fallbackCoordinates.latitude, 2) +
+        Math.pow(current.longitude - fallbackCoordinates.longitude, 2);
+      return currentDistance < closestDistance ? current : closest;
+    });
+  }, [fallbackCoordinates, sites?.data]);
+
+  const fallbackFloorId = useMemo(() => {
+    if (!fallbackSite?.floors?.length) return undefined;
+
+    return (
+      fallbackSite.floors.find(f => f.level === 0)?.id ??
+      fallbackSite.floors[0]?.id
+    );
+  }, [fallbackSite]);
+
+  const siteId = placeSiteId ?? fallbackSite?.id;
+  const effectiveFloorId = placeFloorId ?? fallbackFloorId;
   const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: siteId,
-    floorId: placeFloorId,
+    floorId: effectiveFloorId,
   });
 
   useEffect(() => {
-    if (!isLoadingPlace && placeFloorId !== floorId) {
-      setFloorId(placeFloorId);
+    if (!isLoadingPlace && effectiveFloorId && effectiveFloorId !== floorId) {
+      setFloorId(effectiveFloorId);
     }
-  }, [floorId, isLoadingPlace, placeFloorId, setFloorId]);
+  }, [effectiveFloorId, floorId, isLoadingPlace, setFloorId]);
 
   const isLoading = isLoadingPlace || isLoadingPlaces;
   const placeName =

@@ -6,6 +6,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -104,6 +105,13 @@ export const MapNavigator = ({
   const currentRoute = descriptors[state.routes[state.index].key];
   const mapDefaultOptions = currentRoute.options?.mapDefaultOptions ?? {};
   const mapOptions = currentRoute.options?.mapOptions ?? {};
+  const cameraOptions = useMemo(
+    () => ({
+      ...(mapDefaultOptions?.camera ?? {}),
+      ...(mapOptions?.camera ?? {}),
+    }),
+    [mapDefaultOptions?.camera, mapOptions?.camera],
+  );
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
@@ -136,6 +144,24 @@ export const MapNavigator = ({
       }, 1500);
     }
   }, [orientation]);
+
+  useEffect(() => {
+    if (
+      !IS_IOS ||
+      !cameraRef.current ||
+      Object.keys(cameraOptions).length === 0
+    ) {
+      return;
+    }
+
+    const frame = requestAnimationFrame(() =>
+      cameraRef.current?.setCamera(cameraOptions),
+    );
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [cameraOptions]);
 
   useEffect(() =>
     // reaped from @react-navigation/native-stack/src/navigators/createNativeStackNavigator
@@ -302,11 +328,7 @@ export const MapNavigator = ({
                 {...mapOptions}
               >
                 <BackgroundLayer id="background" />
-                <Camera
-                  ref={cameraRef}
-                  {...(mapDefaultOptions?.camera ?? {})}
-                  {...(mapOptions?.camera ?? {})}
-                />
+                <Camera ref={cameraRef} {...cameraOptions} />
                 {MapDefaultContent && <MapDefaultContent />}
                 {MapContent && <MapContent />}
               </MapView>
