@@ -40,6 +40,14 @@ export const WeekFilter = ({
     return `${current.toFormat('d MMM')} - ${endOfWeek.toFormat('d MMM')}`;
   }, [current, endOfWeek]);
 
+  // a11y: use full month names so VoiceOver reads "4 maggio" instead of "mag"
+  const weekAccessibilityLabel = useMemo(() => {
+    return t('agendaScreen.weekRange', {
+      start: current.toFormat('d MMMM'),
+      end: endOfWeek.toFormat('d MMMM'),
+    });
+  }, [current, endOfWeek, t]);
+
   return (
     <Row align="center">
       <IconButton
@@ -54,7 +62,7 @@ export const WeekFilter = ({
       />
       <Text
         accessible
-        accessibilityLabel={week}
+        accessibilityLabel={weekAccessibilityLabel}
         accessibilityRole="text"
         style={styles.item}
       >
