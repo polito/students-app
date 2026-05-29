@@ -34,7 +34,8 @@
     "previousWeek": "Previous week",
     "nextWeek": "Next week",
     "prevWeekHint": "Go to previous week",
-    "nextWeekHint": "Go to next week"
+    "nextWeekHint": "Go to next week",
+    "weekRange": "From {{start}} to {{end}}"
   },
   "agendaDialog": {
     "hideEventTitle": "Hide event",
@@ -476,7 +477,12 @@
     "updateDownloadedInfoMessageOneDownload": "{{downloadedCount}} already downloaded files will be updated and 1 new file will be downloaded.",
     "updateDownloadedInfoMessages": "{{downloadedCount}} already downloaded files will be updated and {{newCount}} new files will be downloaded.",
     "downloadOnlyNew": "New only",
-    "downloadAll": "Download all"
+    "downloadAll": "Download all",
+    "fileListView": "File list view",
+    "folderTreeView": "Folder tree view",
+    "toggleViewHint": "Change the display mode",
+    "sortByLabel": "Sort by: {{option}}",
+    "openSortMenuHint": "Open sort menu"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -1060,7 +1066,9 @@
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "favoriteActive": "Set as favorite, Active",
+    "favoriteInactive": "Set as favorite, Inactive"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",

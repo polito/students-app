@@ -34,7 +34,8 @@
     "previousWeek": "Settimana precedente",
     "nextWeek": "Settimana successiva",
     "prevWeekHint": "Vai alla settimana precedente",
-    "nextWeekHint": "Vai alla settimana successiva"
+    "nextWeekHint": "Vai alla settimana successiva",
+    "weekRange": "Dal {{start}} al {{end}}"
   },
   "agendaDialog": {
     "hideEventTitle": "Nascondi evento",
@@ -769,7 +770,12 @@
     "updateDownloadedInfoMessageOneDownload": "{{downloadedCount}} file già scaricati verranno aggiornati e 1 nuovo file verrà scaricato.",
     "updateDownloadedInfoMessages": "{{downloadedCount}} file già scaricati verranno aggiornati e {{newCount}} nuovi file verranno scaricati.",
     "downloadOnlyNew": "Solo nuovi",
-    "downloadAll": "Scarica tutti"
+    "downloadAll": "Scarica tutti",
+    "fileListView": "Vista lista file",
+    "folderTreeView": "Vista ad albero",
+    "toggleViewHint": "Cambia la modalità di visualizzazione",
+    "sortByLabel": "Ordina per: {{option}}",
+    "openSortMenuHint": "Apri il menu di ordinamento"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
