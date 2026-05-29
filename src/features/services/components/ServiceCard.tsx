@@ -88,7 +88,7 @@ export const ServiceCard = ({
       cardStyle={[styles.card, props.cardStyle]}
       accessibilityLabel={accessibilityLabel}
     >
-      <Row accessibilityRole="button" justify="space-between" align="center">
+      <Row justify="space-between" align="center">
         <Icon
           icon={icon}
           size={28}
