@@ -1,5 +1,14 @@
 # PoliTO Students App
 
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained!**
+>
+> The PoliTO Students App has moved to the new [**polito/rn-apps**](https://github.com/polito/rn-apps) monorepo.
+>
+> For the latest source code, bug reports, feature requests, and contributions, please refer to the new repository.
+
+___
+
 Politecnico di Torino's official mobile application for students.
 
 [![License: EUPL--1.2](https://img.shields.io/badge/License-EUPL--1.2-brightgreen.svg)](./LICENSE.md)
