@@ -12,11 +12,13 @@ import { usePreferencesContext } from '../../../src/core/contexts/PreferencesCon
 
 export interface PillIconButtonProps extends PillButtonProps {
   icon?: IconDefinition;
+  iconTrailing?: boolean;
 }
 
 export const PillIconButton = ({
   children,
   icon,
+  iconTrailing = false,
   ...props
 }: PillIconButtonProps) => {
   const styles = useStylesheet(createStyles);
@@ -29,7 +31,7 @@ export const PillIconButton = ({
         : {})}
     >
       <Row align="center" gap={1.5}>
-        {icon && <Icon icon={icon} color="white" />}
+        {icon && !iconTrailing && <Icon icon={icon} color="white" />}
         <Text
           style={[
             styles.text,
@@ -40,6 +42,7 @@ export const PillIconButton = ({
         >
           {children}
         </Text>
+        {icon && iconTrailing && <Icon icon={icon} color="white" />}
       </Row>
     </PillButton>
   );
