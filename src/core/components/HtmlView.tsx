@@ -9,6 +9,7 @@ import RenderHTML, {
   useInternalRenderer,
 } from 'react-native-render-html';
 import Video from 'react-native-video';
+import { WebView } from 'react-native-webview';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
@@ -16,6 +17,7 @@ import { Text, calculateValueOfPercentage } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import TableRenderer, { tableModel } from '@native-html/table-plugin';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -111,6 +113,7 @@ const customHTMLElementModels = {
     contentModel: HTMLContentModel.block,
     isVoid: true,
   }),
+  table: tableModel,
 };
 
 const createCustomVideoRenderer = (variant: string) => {
@@ -345,6 +348,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       p: createCustomTextRenderer(variant),
       img: createCustomImageRenderer(variant),
       video: createCustomVideoRenderer(variant),
+      table: TableRenderer,
     }),
     [variant],
   );
@@ -386,6 +390,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       enableExperimentalBRCollapsing
       enableExperimentalGhostLinesPrevention
       enableCSSInlineProcessing
+      WebView={WebView}
       renderers={renderers}
       customHTMLElementModels={customHTMLElementModels}
     />
