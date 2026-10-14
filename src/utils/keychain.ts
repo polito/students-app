@@ -7,6 +7,8 @@ import Keychain, {
   hasGenericPassword,
 } from 'react-native-keychain';
 
+import { ToothPicSDK } from '@toothpic.eu/react-native-toothpic-sdk';
+
 const NO_TOKEN = '__EMPTY__';
 const kcSettings: BaseOptions = { service: 'it.polito.students-app' };
 const kcSessingsMfa: SetOptions | GetOptions = {
@@ -60,7 +62,7 @@ export class AuthenticatorPrivKey {
   constructor(
     public readonly serial: string,
     public readonly privateKeyB64: string,
-    public readonly type: 'secp256k1' = 'secp256k1',
+    public readonly type: 'secp256k1' | 'toothpic' = 'secp256k1',
   ) {}
 
   serialize(): string {
@@ -84,10 +86,10 @@ export async function checkCanSavePrivateKeyMFA() {
 export async function savePrivateKeyMFA(
   serial: string,
   privateKeyB64: string,
+  type: 'secp256k1' | 'toothpic',
   authenticationPrompt: AuthenticationPrompt,
 ): Promise<boolean> {
-  const privateKey = new AuthenticatorPrivKey(serial, privateKeyB64);
-
+  const privateKey = new AuthenticatorPrivKey(serial, privateKeyB64, type);
   await Keychain.setGenericPassword(serial, privateKey.serialize(), {
     ...kcSessingsMfa,
     authenticationPrompt,
@@ -112,6 +114,7 @@ export async function getPrivateKeyMFA(
 
 export async function resetPrivateKeyMFA(): Promise<void> {
   await Keychain.resetGenericPassword({ service: kcSessingsMfa.service });
+  ToothPicSDK.deleteAllKeys();
 }
 
 export async function hasPrivateKeyMFA(): Promise<boolean> {
