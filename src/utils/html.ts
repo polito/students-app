@@ -13,7 +13,8 @@ export const getHtmlTextContent = (text: string) => {
 };
 
 export const linkUrls = (html: string) => {
-  return Autolinker.link(html, {
+  const spaced = html.replace(/([^\s])((https?:\/\/|www\.)\S+)/g, '$1 $2');
+  return Autolinker.link(spaced, {
     truncate: 48,
   });
 };
