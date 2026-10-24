@@ -87,7 +87,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                 <View>
                   <Text>{`${formatDate(new Date(grade.date))} ${
                     accessibility?.fontSize && accessibility.fontSize < 150
-                      ? '-' +
+                      ? '- ' +
                         t('common.creditsWithUnit', {
                           credits: grade.credits,
                         })
