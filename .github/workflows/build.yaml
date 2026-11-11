@@ -50,7 +50,7 @@ jobs:
       push_to_playstore: ${{ steps.configure.outputs.push_to_playstore }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Get version from tag (new release)
@@ -125,11 +125,11 @@ jobs:
           cat $GITHUB_OUTPUT
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ./node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
@@ -154,36 +154,36 @@ jobs:
       SENTRY_ALLOW_FAILURE: "true"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set .env
         run: echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
-      - name: Gradle Wrapper Validation
-        uses: gradle/actions/wrapper-validation@v4
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ./node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
-      - name: Cache Gradle artifacts
-        uses: actions/cache@v4
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-      - name: Setup build cache
-        uses: hendrikmuhs/ccache-action@v1.2
+          java-version: 17
+          distribution: temurin
+      - name: Gather gradle version
+        id: gradle_version
+        run: echo "ver=$(cat ./android/gradle/wrapper/gradle-wrapper.properties | grep distributionUrl | cut -d'=' -f2 | cut -d- -f2)" >> $GITHUB_OUTPUT
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
         with:
-          max-size: 1G
+          gradle-version: "${{ steps.gradle_version.outputs.ver }}"
+      - name: Gradle Wrapper Validation
+        uses: gradle/actions/wrapper-validation@v5
       - name: Setup .npmrc
         run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
       - name: Enforce version
@@ -251,7 +251,7 @@ jobs:
         with:
           xcode-version: "16.4"
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set .env
         run: echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
       - name: Setup Ruby
@@ -259,11 +259,11 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ./node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
@@ -282,7 +282,7 @@ jobs:
         if: ${{ env.APP_VERSION != '' }}
         run: npm version "$APP_VERSION" --no-git-tag-version
       - name: Cache pods
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ./ios/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
@@ -323,7 +323,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Gather artifacts
         uses: actions/download-artifact@v4
         continue-on-error: true
